@@ -1,0 +1,5755 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MENDES CLINIC - Sistemas de Gestão Hospitalar</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+:root{
+    --lilas-escuro:#45205f;
+    --lilas:#704394;
+    --lilas-medio:#8b5bb1;
+    --lilas-claro:#eee4f7;
+    --lilas-muito-claro:#f8f4fb;
+    --branco:#fff;
+    --texto:#332040;
+    --cinza:#75677f;
+    --borda:#ddd1e6;
+    --verde:#198754;
+    --amarelo:#e99a00;
+    --vermelho:#e83e50;
+    --azul:#2878c7;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f7f4fa;
+    color:var(--texto);
+}
+
+button,input,select,textarea{
+    font-family:inherit;
+}
+
+/* =========================
+   MENU
+========================= */
+
+.sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    width:250px;
+    height:100vh;
+    background:linear-gradient(180deg,#714497,#45205f);
+    color:#fff;
+    overflow-y:auto;
+    z-index:100;
+}
+
+.logo{
+    min-height:120px;
+    padding:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(0,0,0,.08);
+    text-align:center;
+}
+
+.logo img{
+    max-width:220px;
+    max-height:100px;
+    object-fit:contain;
+}
+
+.logo-fallback{
+    font-weight:bold;
+    font-size:20px;
+}
+
+.logo-fallback small{
+    display:block;
+    font-size:11px;
+    font-weight:normal;
+    margin-top:5px;
+}
+
+.menu{
+    padding:10px;
+}
+
+.menu-item{
+    display:flex;
+    align-items:center;
+    gap:13px;
+    padding:14px;
+    border-radius:6px;
+    cursor:pointer;
+    margin-bottom:3px;
+    transition:.2s;
+}
+
+.menu-item:hover,
+.menu-item.ativo{
+    background:#9467b8;
+}
+
+.menu-item i:first-child{
+    width:22px;
+    text-align:center;
+    font-size:18px;
+}
+
+.menu-item span{
+    flex:1;
+}
+
+.seta{
+    font-size:11px;
+    transition:.2s;
+}
+
+.submenu{
+    display:none;
+    background:rgba(0,0,0,.12);
+    border-radius:6px;
+    margin-bottom:5px;
+    overflow:hidden;
+}
+
+.submenu.aberto{
+    display:block;
+}
+
+.submenu div{
+    padding:11px 8px 11px 48px;
+    cursor:pointer;
+    font-size:13px;
+}
+
+.submenu div:hover{
+    background:#9567b8;
+}
+
+/* =========================
+   PRINCIPAL
+========================= */
+
+.main{
+    margin-left:250px;
+    min-height:100vh;
+}
+
+.topbar{
+    height:65px;
+    background:linear-gradient(90deg,#75499a,#4d2869);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    gap:20px;
+    padding:0 24px;
+    position:sticky;
+    top:0;
+    z-index:50;
+}
+
+.menu-top{
+    font-size:22px;
+    cursor:pointer;
+}
+
+.search{
+    flex:1;
+    max-width:750px;
+    position:relative;
+}
+
+.search i{
+    position:absolute;
+    left:15px;
+    top:12px;
+    color:#704394;
+}
+
+.search input{
+    width:100%;
+    height:40px;
+    border:0;
+    border-radius:6px;
+    outline:none;
+    padding:0 15px 0 44px;
+}
+
+.top-info{
+    margin-left:auto;
+    display:flex;
+    align-items:center;
+    gap:17px;
+    font-size:13px;
+}
+
+.notification{
+    position:relative;
+    font-size:19px;
+}
+
+.badge{
+    position:absolute;
+    top:-10px;
+    right:-10px;
+    width:18px;
+    height:18px;
+    border-radius:50%;
+    background:#ef3e50;
+    color:#fff;
+    font-size:10px;
+    display:grid;
+    place-items:center;
+}
+
+.content{
+    padding:20px;
+}
+
+.pagina{
+    display:none;
+}
+
+.pagina.ativa{
+    display:block;
+}
+
+.titulo{
+    margin-bottom:18px;
+}
+
+.titulo h2{
+    font-size:27px;
+    margin-bottom:5px;
+    color:#3d2252;
+}
+
+.titulo h2 i{
+    color:#704394;
+}
+
+.titulo p{
+    color:#786986;
+}
+
+/* =========================
+   CARDS
+========================= */
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:13px;
+    margin-bottom:18px;
+}
+
+.card{
+    min-height:105px;
+    border-radius:9px;
+    padding:17px;
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.card i{
+    font-size:35px;
+}
+
+.card h3{
+    font-size:13px;
+    font-weight:normal;
+}
+
+.card strong{
+    display:block;
+    margin-top:5px;
+    font-size:25px;
+}
+
+.card-lilas{
+    background:#eadff4;
+    color:#71459a;
+}
+
+.card-verde{
+    background:#dcf4e8;
+    color:#16845a;
+}
+
+.card-amarelo{
+    background:#fff0cc;
+    color:#b36e00;
+}
+
+.card-vermelho{
+    background:#ffdee1;
+    color:#dd3546;
+}
+
+.card-azul{
+    background:#e1efff;
+    color:#2878c7;
+}
+
+.dashboard-layout{
+    display:grid;
+    grid-template-columns:1fr 335px;
+    gap:18px;
+}
+
+.right-panel{
+    display:flex;
+    flex-direction:column;
+    gap:17px;
+}
+
+/* =========================
+   BOX
+========================= */
+
+.box{
+    background:#fff;
+    border:1px solid var(--borda);
+    border-radius:8px;
+    box-shadow:0 2px 8px rgba(60,30,80,.06);
+}
+
+.box-header{
+    padding:16px 18px;
+    border-bottom:1px solid var(--borda);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+}
+
+.form-box{
+    padding:20px;
+}
+
+.aviso-area,
+.acesso{
+    padding:18px;
+}
+
+.aviso-area h3,
+.acesso h3{
+    margin-bottom:15px;
+}
+
+.aviso{
+    display:flex;
+    gap:11px;
+    padding:13px 0;
+    border-bottom:1px solid var(--borda);
+    font-size:13px;
+    line-height:1.4;
+}
+
+.aviso:last-child{
+    border-bottom:0;
+}
+
+.aviso i{
+    color:#8354aa;
+    font-size:18px;
+}
+
+.acesso-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:8px;
+}
+
+.acesso-item{
+    min-height:95px;
+    background:#f1eaf7;
+    border-radius:7px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:7px;
+    cursor:pointer;
+    font-size:11px;
+}
+
+.acesso-item:hover{
+    background:#e6d7f2;
+}
+
+.acesso-item i{
+    font-size:26px;
+    color:#714397;
+    margin-bottom:8px;
+}
+
+/* =========================
+   BOTÕES
+========================= */
+
+.btn{
+    border:0;
+    border-radius:5px;
+    padding:10px 15px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.btn-primary{
+    background:#8656ae;
+    color:#fff;
+}
+
+.btn-primary:hover{
+    background:#704394;
+}
+
+.btn-light{
+    background:#f1ecf5;
+    color:#54306f;
+    border:1px solid #ddd1e6;
+}
+
+.btn-light:hover{
+    background:#e6d9ef;
+}
+
+.btn-danger{
+    background:#e64152;
+    color:#fff;
+}
+
+.btn-success{
+    background:#198754;
+    color:#fff;
+}
+
+.btn-warning{
+    background:#e99a00;
+    color:#fff;
+}
+
+.btn-icon{
+    padding:7px 10px;
+    margin:2px;
+}
+
+/* =========================
+   TABELAS
+========================= */
+
+.table-responsive{
+    overflow:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:#eee8f3;
+    padding:12px;
+    text-align:left;
+    font-size:13px;
+    white-space:nowrap;
+}
+
+td{
+    padding:12px;
+    border-bottom:1px solid #eee7f3;
+    font-size:13px;
+}
+
+tbody tr:hover{
+    background:#fcfaff;
+}
+
+/* =========================
+   STATUS
+========================= */
+
+.status{
+    display:inline-block;
+    padding:6px 10px;
+    border-radius:5px;
+    font-size:11px;
+    font-weight:bold;
+}
+
+.confirmado,
+.pago,
+.realizado,
+.resultado{
+    background:#daf4e5;
+    color:#14804c;
+}
+
+.atendimento{
+    background:#e8dcf5;
+    color:#7445a0;
+}
+
+.aguardar,
+.pendente,
+.solicitado,
+.agendado{
+    background:#fff0c7;
+    color:#ae7000;
+}
+
+.falta,
+.cancelado{
+    background:#ffdade;
+    color:#db3344;
+}
+
+/* =========================
+   FORMULÁRIOS
+========================= */
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+}
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+
+.form-group label{
+    font-size:13px;
+    font-weight:bold;
+}
+
+.span-2{
+    grid-column:span 2;
+}
+
+.span-3{
+    grid-column:span 3;
+}
+
+.span-4{
+    grid-column:span 4;
+}
+
+.form-control{
+    width:100%;
+    height:42px;
+    border:1px solid #d5c9df;
+    border-radius:5px;
+    padding:0 12px;
+    outline:none;
+    background:#fff;
+}
+
+.form-control:focus{
+    border-color:#8b5bb1;
+    box-shadow:0 0 0 2px rgba(139,91,177,.13);
+}
+
+textarea.form-control{
+    height:100px;
+    resize:vertical;
+    padding-top:12px;
+}
+
+.form-actions{
+    display:flex;
+    justify-content:flex-end;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:22px;
+    padding-top:17px;
+    border-top:1px solid var(--borda);
+}
+
+.obrigatorio{
+    color:red;
+}
+
+.tabs{
+    display:flex;
+    margin-bottom:22px;
+}
+
+.tab{
+    flex:1;
+    padding:13px;
+    text-align:center;
+    background:#f1ecf5;
+    border:1px solid #dfd5e7;
+    font-weight:bold;
+    font-size:13px;
+}
+
+.tab.ativo{
+    background:#8657b0;
+    color:#fff;
+}
+
+/* =========================
+   AGENDAMENTO/CALENDÁRIO
+========================= */
+
+.agendamento-grid{
+    display:grid;
+    grid-template-columns:1fr 1.35fr;
+    gap:18px;
+}
+
+.etapa{
+    margin-bottom:20px;
+}
+
+.etapa h4{
+    margin-bottom:9px;
+}
+
+.paciente-selecionado{
+    padding:13px;
+    margin-top:10px;
+    background:#f1e8f8;
+    border:1px solid #d7c1e8;
+    border-radius:6px;
+    line-height:1.5;
+}
+
+.horarios{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:8px;
+}
+
+.horario{
+    padding:10px 4px;
+    background:#fff;
+    border:1px solid #cfbee0;
+    border-radius:5px;
+    color:#51316d;
+    cursor:pointer;
+}
+
+.horario:hover,
+.horario.selecionado{
+    background:#8657b0;
+    color:#fff;
+}
+
+.calendario-controles{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+}
+
+.calendario-grid{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:5px;
+}
+
+.calendario-dia-semana{
+    padding:10px 4px;
+    text-align:center;
+    font-weight:bold;
+    color:#704394;
+}
+
+.calendario-dia{
+    min-height:85px;
+    border:1px solid var(--borda);
+    border-radius:6px;
+    padding:7px;
+    background:#fff;
+    cursor:pointer;
+}
+
+.calendario-dia:hover{
+    background:#f2eaf8;
+}
+
+.calendario-dia.vazio{
+    border:0;
+    cursor:default;
+    background:transparent;
+}
+
+.calendario-dia.tem-agendamento{
+    border:2px solid #8657b0;
+    background:#f6effb;
+}
+
+.numero-dia{
+    font-weight:bold;
+}
+
+.marcador-agenda{
+    margin-top:5px;
+    font-size:10px;
+    background:#8657b0;
+    color:#fff;
+    padding:3px;
+    border-radius:4px;
+}
+
+/* =========================
+   PRONTUÁRIO
+========================= */
+
+.patient-summary{
+    background:#f6f0fa;
+    border:1px solid #dac8e7;
+    border-radius:7px;
+    padding:15px;
+    margin:15px 0;
+    line-height:1.6;
+}
+
+.historico-item{
+    padding:15px;
+    border-bottom:1px solid var(--borda);
+}
+
+.historico-item:last-child{
+    border-bottom:0;
+}
+
+/* =========================
+   MEDICAMENTOS
+========================= */
+
+.medicamento-linha{
+    border:1px solid var(--borda);
+    background:#faf7fc;
+    padding:15px;
+    border-radius:7px;
+    margin-top:12px;
+}
+
+/* =========================
+   MODAL
+========================= */
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(25,10,35,.6);
+    z-index:500;
+    align-items:center;
+    justify-content:center;
+}
+
+.modal.ativo{
+    display:flex;
+}
+
+.modal-content{
+    width:90%;
+    max-width:750px;
+    max-height:90vh;
+    overflow:auto;
+    background:#fff;
+    border-radius:10px;
+}
+
+.modal-header{
+    padding:17px 20px;
+    background:#704394;
+    color:#fff;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.modal-header button{
+    border:0;
+    background:none;
+    color:#fff;
+    font-size:24px;
+    cursor:pointer;
+}
+
+.modal-body{
+    padding:22px;
+    line-height:1.8;
+}
+
+.modal-footer{
+    padding:15px 20px;
+    border-top:1px solid var(--borda);
+    text-align:right;
+}
+
+/* =========================
+   IMPRESSÃO
+========================= */
+
+.area-impressao{
+    display:none;
+}
+
+@media print{
+    .sidebar,
+    .topbar,
+    .content{
+        display:none !important;
+    }
+
+    .main{
+        margin:0;
+    }
+
+    .area-impressao{
+        display:block !important;
+        padding:35px;
+        color:#000;
+        font-family:Arial,sans-serif;
+    }
+
+    .area-impressao h1,
+    .area-impressao h2{
+        text-align:center;
+        margin-bottom:15px;
+    }
+
+    .assinatura{
+        margin-top:70px;
+        text-align:center;
+    }
+}
+
+/* =========================
+   RESPONSIVO
+========================= */
+
+@media(max-width:1100px){
+    .cards{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .dashboard-layout{
+        grid-template-columns:1fr;
+    }
+
+    .form-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:750px){
+    .sidebar{
+        width:75px;
+    }
+
+    .sidebar .logo img{
+        width:55px;
+    }
+
+    .logo-fallback{
+        font-size:10px;
+    }
+
+    .menu-item span,
+    .menu-item .seta,
+    .submenu{
+        display:none;
+    }
+
+    .main{
+        margin-left:75px;
+    }
+
+    .cards,
+    .form-grid,
+    .agendamento-grid{
+        grid-template-columns:1fr;
+    }
+
+    .span-2,
+    .span-3,
+    .span-4{
+        grid-column:span 1;
+    }
+
+    .top-info{
+        display:none;
+    }
+
+    .calendario-dia{
+        min-height:50px;
+        font-size:11px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =====================================================
+     MENU LATERAL
+===================================================== -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+        <img src="logo-mendes-clinic.png"
+             alt="Mendes Clinic"
+             onerror="this.style.display='none';document.getElementById('logoFallback').style.display='block'">
+
+        <div id="logoFallback" class="logo-fallback" style="display:none">
+            MENDES CLINIC
+            <small>Sistemas de Gestão Hospitalar</small>
+        </div>
+    </div>
+
+    <nav class="menu">
+
+        <div class="menu-item ativo" onclick="mostrarPagina('inicio',this)">
+            <i class="fa-solid fa-house"></i>
+            <span>Início</span>
+        </div>
+
+        <div class="menu-item" onclick="abrirSubmenu('submenuPacientes',this)">
+            <i class="fa-solid fa-users"></i>
+            <span>Pacientes</span>
+            <i class="fa-solid fa-chevron-right seta"></i>
+        </div>
+
+        <div class="submenu" id="submenuPacientes">
+            <div onclick="mostrarPagina('pacientes')">Consultar Paciente</div>
+            <div onclick="novoPaciente()">Novo Paciente</div>
+        </div>
+
+        <div class="menu-item" onclick="mostrarPagina('atendimentos',this)">
+            <i class="fa-solid fa-stethoscope"></i>
+            <span>Atendimentos</span>
+        </div>
+
+        <!-- NOVO MENU AGENDAMENTOS -->
+        <div class="menu-item" onclick="abrirSubmenu('submenuAgendamentos',this)">
+            <i class="fa-solid fa-calendar-days"></i>
+            <span>Agendamentos</span>
+            <i class="fa-solid fa-chevron-right seta"></i>
+        </div>
+
+        <div class="submenu" id="submenuAgendamentos">
+            <div onclick="novoAgendamento()">Novo Agendamento</div>
+            <div onclick="mostrarPagina('calendario')">Calendário</div>
+            <div onclick="mostrarPagina('listaAgendamentos')">Consultar Agendamento</div>
+            <div onclick="mostrarPagina('cancelarAgendamento')">Cancelar Agendamento</div>
+        </div>
+
+        <div class="menu-item" onclick="abrirProntuario()">
+            <i class="fa-solid fa-folder"></i>
+            <span>Prontuário</span>
+        </div>
+
+        <div class="menu-item" onclick="mostrarPagina('prescricoes',this)">
+            <i class="fa-solid fa-file-lines"></i>
+            <span>Prescrições</span>
+        </div>
+
+        <div class="menu-item" onclick="mostrarPagina('exames',this)">
+            <i class="fa-solid fa-flask"></i>
+            <span>Exames</span>
+        </div>
+
+        <div class="menu-item" onclick="mostrarPagina('relatorios',this)">
+            <i class="fa-solid fa-chart-column"></i>
+            <span>Relatórios</span>
+        </div>
+
+        <div class="menu-item" onclick="mostrarPagina('faturamento',this)">
+            <i class="fa-solid fa-credit-card"></i>
+            <span>Faturamento</span>
+        </div>
+
+        <!-- NOVO ATESTADO -->
+        <div class="menu-item" onclick="novoAtestado()">
+            <i class="fa-solid fa-file-medical"></i>
+            <span>Atestado Médico</span>
+        </div>
+
+        <div class="menu-item" onclick="mostrarPagina('configuracoes',this)">
+            <i class="fa-solid fa-gear"></i>
+            <span>Configurações</span>
+        </div>
+
+    </nav>
+</aside>
+
+<!-- =====================================================
+     ÁREA PRINCIPAL
+===================================================== -->
+
+<main class="main">
+
+<header class="topbar">
+
+    <i class="fa-solid fa-bars menu-top"></i>
+
+    <div class="search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input id="pesquisaGeral"
+               placeholder="Pesquisar paciente por nome, CPF ou Cartão SUS..."
+               onkeyup="pesquisarGeral()">
+    </div>
+
+    <div class="top-info">
+        <div class="notification">
+            <i class="fa-solid fa-bell"></i>
+            <span class="badge">3</span>
+        </div>
+
+        <div>
+            <i class="fa-solid fa-user"></i>
+            Recepção
+        </div>
+
+        <div id="dataAtual"></div>
+        <div id="relogio"></div>
+    </div>
+
+</header>
+
+<section class="content">
+
+<!-- =====================================================
+     INÍCIO
+===================================================== -->
+
+<div class="pagina ativa" id="inicio">
+
+    <div class="titulo">
+        <h2>
+            <i class="fa-solid fa-user-nurse"></i>
+            Bem-vindo(a), Recepção!
+        </h2>
+        <p>Acesso rápido às principais funções do sistema.</p>
+    </div>
+
+    <div class="dashboard-layout">
+
+        <div>
+
+            <div class="cards">
+
+                <div class="card card-lilas">
+                    <i class="fa-solid fa-users"></i>
+                    <div>
+                        <h3>Pacientes cadastrados</h3>
+                        <strong id="totalPacientes">0</strong>
+                    </div>
+                </div>
+
+                <div class="card card-verde">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <div>
+                        <h3>Consultas</h3>
+                        <strong id="totalConsultasHoje">0</strong>
+                    </div>
+                </div>
+
+                <div class="card card-amarelo">
+                    <i class="fa-regular fa-clock"></i>
+                    <div>
+                        <h3>Em atendimento</h3>
+                        <strong id="totalEmAtendimento">0</strong>
+                    </div>
+                </div>
+
+                <div class="card card-vermelho">
+                    <i class="fa-solid fa-user-xmark"></i>
+                    <div>
+                        <h3>Faltas</h3>
+                        <strong id="totalFaltas">0</strong>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="box">
+
+                <div class="box-header">
+                    <h3>
+                        <i class="fa-regular fa-calendar"></i>
+                        Agenda
+                    </h3>
+
+                    <button class="btn btn-primary"
+                            onclick="mostrarPagina('listaAgendamentos')">
+                        Ver todos
+                    </button>
+                </div>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Horário</th>
+                                <th>Paciente</th>
+                                <th>Especialidade</th>
+                                <th>Profissional</th>
+                                <th>Situação</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="agendaDashboard"></tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- AVISOS E ACESSO RÁPIDO -->
+        <div class="right-panel">
+
+            <div class="box aviso-area">
+                <h3>
+                    <i class="fa-solid fa-bullhorn"></i>
+                    Avisos
+                </h3>
+
+                <div class="aviso">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span>Confira os dados do paciente antes de finalizar o cadastro.</span>
+                </div>
+
+                <div class="aviso">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span>Confira diariamente os agendamentos e retornos.</span>
+                </div>
+
+                <div class="aviso">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span>Mantenha as informações cadastrais atualizadas.</span>
+                </div>
+            </div>
+
+            <div class="box acesso">
+
+                <h3>
+                    <i class="fa-solid fa-keyboard"></i>
+                    Acesso rápido
+                </h3>
+
+                <div class="acesso-grid">
+
+                    <div class="acesso-item" onclick="novoPaciente()">
+                        <i class="fa-solid fa-user-plus"></i>
+                        Novo Paciente
+                    </div>
+
+                    <div class="acesso-item" onclick="novoAgendamento()">
+                        <i class="fa-solid fa-calendar-plus"></i>
+                        Novo Agendamento
+                    </div>
+
+                    <div class="acesso-item" onclick="mostrarPagina('pacientes')">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        Consultar Paciente
+                    </div>
+
+                    <div class="acesso-item" onclick="mostrarPagina('atendimentos')">
+                        <i class="fa-solid fa-stethoscope"></i>
+                        Atendimentos
+                    </div>
+
+                    <div class="acesso-item" onclick="novoAtestado()">
+                        <i class="fa-solid fa-file-medical"></i>
+                        Atestado Médico
+                    </div>
+
+                    <div class="acesso-item" onclick="mostrarPagina('calendario')">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        Calendário
+                    </div>
+
+                    <div class="acesso-item" onclick="mostrarPagina('relatorios')">
+                        <i class="fa-solid fa-chart-simple"></i>
+                        Relatórios
+                    </div>
+
+                    <div class="acesso-item" onclick="window.print()">
+                        <i class="fa-solid fa-print"></i>
+                        Imprimir
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- =====================================================
+     PACIENTES
+===================================================== -->
+
+<div class="pagina" id="pacientes">
+
+    <div class="titulo">
+        <h2><i class="fa-solid fa-users"></i> Pacientes</h2>
+        <p>Consultar, visualizar, editar e excluir pacientes.</p>
+    </div>
+
+    <div class="box form-box">
+
+        <div style="display:flex;gap:10px;margin-bottom:20px">
+            <input id="pesquisaPaciente"
+                   class="form-control"
+                   placeholder="Pesquisar por nome, CPF ou Cartão SUS..."
+                   onkeyup="listarPacientes()">
+
+            <button class="btn btn-primary" onclick="novoPaciente()">
+                <i class="fa-solid fa-user-plus"></i>
+                Novo Paciente
+            </button>
+        </div>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>CPF</th>
+                        <th>Cartão SUS</th>
+                        <th>Telefone</th>
+                        <th>Atendente</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelaPacientes"></tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<!-- =====================================================
+     NOVO/EDITAR PACIENTE
+===================================================== -->
+
+<div class="pagina" id="novoPaciente">
+
+    <div class="titulo">
+        <h2 id="tituloPaciente">
+            <i class="fa-solid fa-user-plus"></i>
+            Cadastro de Paciente
+        </h2>
+        <p>Pacientes › Novo Paciente</p>
+    </div>
+
+    <div class="box form-box">
+
+        <div class="tabs">
+            <div class="tab ativo">Dados Pessoais</div>
+            <div class="tab">Endereço</div>
+            <div class="tab">Contato</div>
+            <div class="tab">Dados Complementares</div>
+        </div>
+
+        <form id="formPaciente">
+
+            <div class="form-grid">
+
+                <div class="form-group span-2">
+                    <label>Nome completo <span class="obrigatorio">*</span></label>
+                    <input id="nomePaciente" class="form-control" required>
+                </div>
+
+                <div class="form-group span-2">
+                    <label>Nome social</label>
+                    <input id="nomeSocial" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>Data de nascimento</label>
+                    <input id="nascimento" type="date" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>Idade</label>
+                    <input id="idade" class="form-control" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Sexo</label>
+                    <select id="sexo" class="form-control">
+                        <option value="">Selecione</option>
+                        <option>Feminino</option>
+                        <option>Masculino</option>
+                        <option>Outro</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Estado civil</label>
+                    <select id="estadoCivil" class="form-control">
+                        <option value="">Selecione</option>
+                        <option>Solteiro(a)</option>
+                        <option>Casado(a)</option>
+                        <option>Divorciado(a)</option>
+                        <option>Viúvo(a)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>CPF <span class="obrigatorio">*</span></label>
+                    <input id="cpf"
+                           class="form-control"
+                           placeholder="000.000.000-00"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label>Cartão SUS</label>
+                    <input id="sus" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>RG</label>
+                    <input id="rg" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>Órgão emissor</label>
+                    <select id="orgaoEmissor" class="form-control">
+                        <option value="">Selecione</option>
+                        <option>SSP</option>
+                        <option>DETRAN</option>
+                        <option>Outro</option>
+                    </select>
+                </div>
+
+                <div class="form-group span-2">
+                    <label>Nome da mãe</label>
+                    <input id="nomeMae" class="form-control">
+                </div>
+
+                <div class="form-group span-2">
+                    <label>Nome do pai</label>
+                    <input id="nomePai" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>Telefone fixo</label>
+                    <input id="telefoneFixo" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>Telefone celular</label>
+                    <input id="telefone" class="form-control">
+                </div>
+
+                <div class="form-group span-2">
+                    <label>E-mail</label>
+                    <input id="email" type="email" class="form-control">
+                </div>
+
+                <div class="form-group span-2">
+                    <label>Endereço</label>
+                    <input id="endereco" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>Número</label>
+                    <input id="numero" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>Bairro</label>
+                    <input id="bairro" class="form-control">
+                </div>
+
+                <div class="form-group span-2">
+                    <label>Cidade</label>
+                    <input id="cidade" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label>Estado</label>
+                    <select id="estado" class="form-control">
+                        <option>BA</option>
+                        <option>SE</option>
+                        <option>PE</option>
+                        <option>AL</option>
+                        <option>SP</option>
+                        <option>RJ</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>CEP</label>
+                    <input id="cep" class="form-control">
+                </div>
+
+                <!-- NOVO CAMPO -->
+                <div class="form-group span-2">
+                    <label>
+                        Nome do Atendente Responsável
+                        <span class="obrigatorio">*</span>
+                    </label>
+                    <input id="atendenteCadastro"
+                           class="form-control"
+                           placeholder="Digite o nome do atendente"
+                           required>
+                </div>
+
+                <div class="form-group span-2">
+                    <label>Alergias</label>
+                    <input id="alergias"
+                           class="form-control"
+                           placeholder="Informe alergias ou digite Nenhuma">
+                </div>
+
+                <div class="form-group span-4">
+                    <label>Observações do cadastro</label>
+                    <textarea id="observacoesPaciente"
+                              class="form-control"
+                              placeholder="Informações complementares..."></textarea>
+                </div>
+
+            </div>
+
+            <div class="form-actions">
+
+                <button type="button"
+                        class="btn btn-light"
+                        onclick="mostrarPagina('pacientes')">
+                    Voltar
+                </button>
+
+                <button type="button"
+                        class="btn btn-light"
+                        onclick="limparPaciente()">
+                    Limpar
+                </button>
+
+                <button type="submit"
+                        class="btn btn-primary"
+                        id="btnSalvarPaciente">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Salvar Paciente
+                </button>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- =====================================================
+     ATENDIMENTOS
+===================================================== -->
+
+<div class="pagina" id="atendimentos">
+
+    <div class="titulo">
+        <h2><i class="fa-solid fa-stethoscope"></i> Atendimentos</h2>
+        <p>Controle dos pacientes em atendimento.</p>
+    </div>
+
+    <div class="cards">
+
+        <div class="card card-lilas">
+            <i class="fa-solid fa-clock"></i>
+            <div>
+                <h3>Aguardando</h3>
+                <strong id="atendimentoAguardando">0</strong>
+            </div>
+        </div>
+
+        <div class="card card-verde">
+            <i class="fa-solid fa-user-doctor"></i>
+            <div>
+                <h3>Em atendimento</h3>
+                <strong id="atendimentoEmAndamento">0</strong>
+            </div>
+        </div>
+
+        <div class="card card-amarelo">
+            <i class="fa-solid fa-calendar-check"></i>
+            <div>
+                <h3>Confirmados</h3>
+                <strong id="atendimentoConfirmado">0</strong>
+            </div>
+        </div>
+
+        <div class="card card-vermelho">
+            <i class="fa-solid fa-user-xmark"></i>
+            <div>
+                <h3>Faltas</h3>
+                <strong id="atendimentoFaltas">0</strong>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="box">
+
+        <div class="box-header">
+            <h3>Lista de Atendimentos</h3>
+
+            <button class="btn btn-primary" onclick="novoAgendamento()">
+                <i class="fa-solid fa-plus"></i>
+                Novo Atendimento
+            </button>
+        </div>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Horário</th>
+                        <th>Paciente</th>
+                        <th>Especialidade</th>
+                        <th>Profissional</th>
+                        <th>Situação</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+
+                <tbody id="tabelaAtendimentos"></tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<!-- =====================================================
+     NOVO AGENDAMENTO
+===================================================== -->
+
+<div class="pagina" id="agendamento">
+
+    <div class="titulo">
+        <h2 id="tituloAgendamento">
+            <i class="fa-solid fa-calendar-plus"></i>
+            Agendamento de Consulta
+        </h2>
+        <p>Agendamentos › Novo Agendamento</p>
+    </div>
+
+    <div class="agendamento-grid">
+
+        <div class="box form-box">
+
+            <div class="etapa">
+                <h4>1. Selecione o Paciente</h4>
+
+                <select id="pacienteAgendamento"
+                        class="form-control"
+                        onchange="mostrarPacienteAgenda()">
+                </select>
+
+                <div id="dadosPacienteAgenda"
+                     class="paciente-selecionado">
+                    Selecione um paciente.
+                </div>
+            </div>
+
+            <div class="etapa">
+                <h4>2. Especialidade</h4>
+
+                <select id="especialidade" class="form-control">
+                    <option>Clínica Geral</option>
+                    <option>Pediatria</option>
+                    <option>Ginecologia</option>
+                    <option>Ortopedia</option>
+                    <option>Cardiologia</option>
+                    <option>Dermatologia</option>
+                </select>
+            </div>
+
+            <div class="etapa">
+                <h4>3. Profissional</h4>
+
+                <select id="profissional" class="form-control"></select>
+            </div>
+
+        </div>
+
+        <div class="box form-box">
+
+            <h4>4. Escolha a Data e o Horário</h4>
+            <br>
+
+            <div class="form-group">
+                <label>Data</label>
+                <input id="dataAgendamento"
+                       type="date"
+                       class="form-control">
+            </div>
+
+            <br>
+
+            <div class="horarios">
+                <button class="horario" onclick="selecionarHorario(event,'08:00')">08:00</button>
+                <button class="horario" onclick="selecionarHorario(event,'08:30')">08:30</button>
+                <button class="horario" onclick="selecionarHorario(event,'09:00')">09:00</button>
+                <button class="horario" onclick="selecionarHorario(event,'09:30')">09:30</button>
+                <button class="horario" onclick="selecionarHorario(event,'10:00')">10:00</button>
+                <button class="horario" onclick="selecionarHorario(event,'10:30')">10:30</button>
+                <button class="horario" onclick="selecionarHorario(event,'11:00')">11:00</button>
+                <button class="horario" onclick="selecionarHorario(event,'11:30')">11:30</button>
+                <button class="horario" onclick="selecionarHorario(event,'13:00')">13:00</button>
+                <button class="horario" onclick="selecionarHorario(event,'13:30')">13:30</button>
+                <button class="horario" onclick="selecionarHorario(event,'14:00')">14:00</button>
+                <button class="horario" onclick="selecionarHorario(event,'14:30')">14:30</button>
+                <button class="horario" onclick="selecionarHorario(event,'15:00')">15:00</button>
+                <button class="horario" onclick="selecionarHorario(event,'15:30')">15:30</button>
+                <button class="horario" onclick="selecionarHorario(event,'16:00')">16:00</button>
+                <button class="horario" onclick="selecionarHorario(event,'16:30')">16:30</button>
+            </div>
+
+            <br>
+
+            <div class="form-group">
+                <label>5. Observações</label>
+                <textarea id="observacoesAgenda"
+                          class="form-control"
+                          placeholder="Observações do agendamento..."></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button class="btn btn-light"
+                        onclick="mostrarPagina('inicio')">
+                    Voltar
+                </button>
+
+                <button class="btn btn-light"
+                        onclick="limparAgendamento()">
+                    Limpar
+                </button>
+
+                <button class="btn btn-primary"
+                        id="btnSalvarAgendamento"
+                        onclick="salvarAgendamento()">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    Confirmar Agendamento
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- =====================================================
+     CALENDÁRIO
+===================================================== -->
+
+<div class="pagina" id="calendario">
+
+    <div class="titulo">
+        <h2>
+            <i class="fa-solid fa-calendar-days"></i>
+            Calendário de Agendamentos
+        </h2>
+        <p>Visualize os agendamentos por dia.</p>
+    </div>
+
+    <div class="box form-box">
+
+        <div class="calendario-controles">
+
+            <button class="btn btn-light" onclick="mesAnterior()">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+
+            <h3 id="tituloCalendario"></h3>
+
+            <button class="btn btn-light" onclick="mesSeguinte()">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+
+        </div>
+
+        <div class="calendario-grid" id="calendarioGrid"></div>
+
+    </div>
+</div>
+
+<!-- =====================================================
+     CONSULTAR AGENDAMENTOS
+===================================================== -->
+
+<div class="pagina" id="listaAgendamentos">
+
+    <div class="titulo">
+        <h2>
+            <i class="fa-solid fa-calendar-days"></i>
+            Consultar Agendamentos
+        </h2>
+        <p>Consultar, editar, visualizar e cancelar agendamentos.</p>
+    </div>
+
+    <div class="box form-box">
+
+        <div style="display:flex;gap:10px;margin-bottom:20px">
+            <input id="pesquisaAgendamento"
+                   class="form-control"
+                   placeholder="Pesquisar paciente, profissional ou especialidade..."
+                   onkeyup="listarAgendamentos()">
+
+            <button class="btn btn-primary" onclick="novoAgendamento()">
+                <i class="fa-solid fa-plus"></i>
+                Novo Agendamento
+            </button>
+        </div>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Horário</th>
+                        <th>Paciente</th>
+                        <th>Especialidade</th>
+                        <th>Profissional</th>
+                        <th>Situação</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelaAgendamentos"></tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<!-- =====================================================
+     CANCELAR AGENDAMENTO
+===================================================== -->
+
+<div class="pagina" id="cancelarAgendamento">
+
+    <div class="titulo">
+        <h2>
+            <i class="fa-solid fa-calendar-xmark"></i>
+            Cancelar Agendamento
+        </h2>
+        <p>Localize o agendamento e registre o cancelamento.</p>
+    </div>
+
+    <div class="box form-box">
+
+        <input id="pesquisaCancelamento"
+               class="form-control"
+               placeholder="Pesquisar pelo nome do paciente..."
+               onkeyup="listarCancelamentos()">
+
+        <br>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Paciente</th>
+                        <th>Data</th>
+                        <th>Horário</th>
+                        <th>Profissional</th>
+                        <th>Status</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelaCancelamentos"></tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<!-- =====================================================
+     PRONTUÁRIO
+===================================================== -->
+
+<div class="pagina" id="prontuario">
+
+    <div class="titulo">
+        <h2>
+            <i class="fa-solid fa-folder-medical"></i>
+            Prontuário
+        </h2>
+        <p>Histórico completo do paciente.</p>
+    </div>
+
+    <div class="box form-box">
+
+        <div class="form-grid">
+
+            <div class="form-group span-3">
+                <label>Pesquisar paciente por Nome ou CPF</label>
+                <input id="pesquisaProntuario"
+                       class="form-control"
+                       placeholder="Digite o nome ou CPF..."
+                       onkeyup="pesquisarPacienteProntuario()">
+            </div>
+
+            <div class="form-group">
+                <label>Paciente</label>
+                <select id="pacienteProntuario"
+                        class="form-control"
+                        onchange="carregarHistoricoPaciente()">
+                </select>
+            </div>
+
+        </div>
+
+        <div id="dadosPacienteProntuario"
+             class="patient-summary">
+            Selecione um paciente para visualizar seus dados.
+        </div>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label>Data do atendimento</label>
+                <input id="dataProntuario" type="date" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label>Profissional</label>
+                <select id="profissionalProntuario" class="form-control"></select>
+            </div>
+
+            <div class="form-group span-2">
+                <label>Diagnóstico registrado</label>
+                <input id="diagnosticoProntuario"
+                       class="form-control"
+                       placeholder="Diagnóstico">
+            </div>
+
+            <div class="form-group span-2">
+                <label>Queixa principal</label>
+                <textarea id="queixaProntuario"
+                          class="form-control"></textarea>
+            </div>
+
+            <div class="form-group span-2">
+                <label>Histórico / Evolução</label>
+                <textarea id="evolucaoProntuario"
+                          class="form-control"></textarea>
+            </div>
+
+            <div class="form-group span-2">
+                <label>Alergias</label>
+                <input id="alergiasProntuario" class="form-control">
+            </div>
+
+            <div class="form-group span-2">
+                <label>Anexo</label>
+                <input id="anexoProntuario"
+                       type="file"
+                       class="form-control"
+                       accept=".pdf,.jpg,.jpeg,.png">
+            </div>
+
+            <div class="form-group span-4">
+                <label>Observações</label>
+                <textarea id="observacaoProntuario"
+                          class="form-control"></textarea>
+            </div>
+
+        </div>
+
+        <div class="form-actions">
+
+            <button class="btn btn-light" onclick="limparProntuario()">
+                Limpar
+            </button>
+
+            <button class="btn btn-primary" onclick="salvarProntuario()">
+                <i class="fa-solid fa-floppy-disk"></i>
+                Salvar
+            </button>
+
+            <button class="btn btn-light" onclick="imprimirProntuarioAtual()">
+                <i class="fa-solid fa-print"></i>
+                Imprimir
+            </button>
+
+        </div>
+    </div>
+
+    <br>
+
+    <div class="box">
+        <div class="box-header">
+            <h3>Atendimentos Anteriores / Histórico</h3>
+        </div>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Paciente</th>
+                        <th>Data</th>
+                        <th>Profissional</th>
+                        <th>Diagnóstico</th>
+                        <th>Anexo</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelaProntuarios"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- =====================================================
+     PRESCRIÇÕES
+===================================================== -->
+
+<div class="pagina" id="prescricoes">
+
+    <div class="titulo">
+        <h2>
+            <i class="fa-solid fa-file-prescription"></i>
+            Prescrições
+        </h2>
+        <p>Criação e consulta de prescrições vinculadas ao paciente.</p>
+    </div>
+
+    <div class="box form-box">
+
+        <div class="form-grid">
+
+            <div class="form-group span-2">
+                <label>Paciente</label>
+                <select id="pacientePrescricao" class="form-control"></select>
+            </div>
+
+            <div class="form-group span-2">
+                <label>Profissional responsável</label>
+                <select id="profissionalPrescricao" class="form-control"></select>
+            </div>
+
+        </div>
+
+        <div id="listaMedicamentos"></div>
+
+        <button class="btn btn-light"
+                style="margin-top:15px"
+                onclick="adicionarMedicamento()">
+            <i class="fa-solid fa-plus"></i>
+            Adicionar medicamento
+        </button>
+
+        <div class="form-group" style="margin-top:15px">
+            <label>Orientações gerais</label>
+            <textarea id="orientacaoPrescricao"
+                      class="form-control"
+                      placeholder="Orientações ao paciente..."></textarea>
+        </div>
+
+        <div class="form-actions">
+
+            <button class="btn btn-primary" onclick="salvarPrescricao()">
+                <i class="fa-solid fa-floppy-disk"></i>
+                Salvar
+            </button>
+
+            <button class="btn btn-light" onclick="imprimirPrescricaoFormulario()">
+                <i class="fa-solid fa-print"></i>
+                Imprimir
+            </button>
+
+        </div>
+    </div>
+
+    <br>
+
+    <div class="box">
+
+        <div class="box-header">
+            <h3>Prescrições Cadastradas</h3>
+        </div>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Paciente</th>
+                        <th>Profissional</th>
+                        <th>Medicamentos</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelaPrescricoes"></tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<!-- =====================================================
+     EXAMES
+===================================================== -->
+
+<div class="pagina" id="exames">
+
+    <div class="titulo">
+        <h2>
+            <i class="fa-solid fa-flask-vial"></i>
+            Exames
+        </h2>
+        <p>Solicitação, acompanhamento e resultado de exames.</p>
+    </div>
+
+    <div class="box form-box">
+
+        <div class="form-grid">
+
+            <div class="form-group span-2">
+                <label>Paciente</label>
+                <select id="pacienteExame" class="form-control"></select>
+            </div>
+
+            <div class="form-group span-2">
+                <label>Exame</label>
+                <select id="tipoExame" class="form-control"></select>
+            </div>
+
+            <div class="form-group">
+                <label>Data da solicitação</label>
+                <input id="dataExame" type="date" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label>Status</label>
+                <select id="statusExame" class="form-control">
+                    <option>Solicitado</option>
+                    <option>Agendado</option>
+                    <option>Realizado</option>
+                    <option>Resultado disponível</option>
+                </select>
+            </div>
+
+            <div class="form-group span-2">
+                <label>Resultado</label>
+                <input id="resultadoExame"
+                       class="form-control"
+                       placeholder="Informe o resultado ou observação">
+            </div>
+
+            <div class="form-group span-2">
+                <label>Anexar resultado em PDF</label>
+                <input id="anexoExame"
+                       type="file"
+                       accept=".pdf"
+                       class="form-control">
+            </div>
+
+            <div class="form-group span-2">
+                <label>Observações</label>
+                <textarea id="observacaoExame"
+                          class="form-control"></textarea>
+            </div>
+
+        </div>
+
+        <div class="form-actions">
+
+            <button class="btn btn-primary" onclick="salvarExame()">
+                <i class="fa-solid fa-floppy-disk"></i>
+                Salvar Exame
+            </button>
+
+        </div>
+    </div>
+
+    <br>
+
+    <div class="box">
+
+        <div class="box-header">
+            <h3>Exames Cadastrados</h3>
+        </div>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Paciente</th>
+                        <th>Exame</th>
+                        <th>Data</th>
+                        <th>Status</th>
+                        <th>Resultado</th>
+                        <th>Anexo</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelaExames"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- =====================================================
+     RELATÓRIOS
+===================================================== -->
+
+<div class="pagina" id="relatorios">
+
+    <div class="titulo">
+        <h2>
+            <i class="fa-solid fa-chart-column"></i>
+            Relatórios
+        </h2>
+        <p>Relatórios administrativos da Mendes Clinic.</p>
+    </div>
+
+    <div class="cards">
+
+        <div class="card card-lilas">
+            <i class="fa-solid fa-users"></i>
+            <div>
+                <h3>Pacientes</h3>
+                <strong id="relatorioPacientes">0</strong>
+            </div>
+        </div>
+
+        <div class="card card-verde">
+            <i class="fa-solid fa-calendar-check"></i>
+            <div>
+                <h3>Agendamentos</h3>
+                <strong id="relatorioAgendamentos">0</strong>
+            </div>
+        </div>
+
+        <div class="card card-amarelo">
+            <i class="fa-solid fa-flask"></i>
+            <div>
+                <h3>Exames</h3>
+                <strong id="relatorioExames">0</strong>
+            </div>
+        </div>
+
+        <div class="card card-vermelho">
+            <i class="fa-solid fa-money-bill"></i>
+            <div>
+                <h3>Faturamento</h3>
+                <strong id="relatorioFaturamento">R$ 0,00</strong>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="box form-box">
+
+        <h3>Gerar Relatório</h3>
+        <br>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label>Tipo</label>
+                <select id="tipoRelatorio" class="form-control">
+                    <option>Pacientes</option>
+                    <option>Agendamentos</option>
+                    <option>Atendimentos</option>
+                    <option>Prontuários</option>
+                    <option>Prescrições</option>
+                    <option>Exames</option>
+                    <option>Faturamento</option>
+                    <option>Atestados</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Paciente</label>
+                <select id="pacienteRelatorio" class="form-control"></select>
+            </div>
+
+            <div class="form-group">
+                <label>Profissional</label>
+                <select id="profissionalRelatorio" class="form-control"></select>
+            </div>
+
+            <div class="form-group">
+                <label>Data inicial</label>
+                <input type="date" id="relatorioInicio" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label>Data final</label>
+                <input type="date" id="relatorioFim" class="form-control">
+            </div>
+
+        </div>
+
+        <div class="form-actions">
+
+            <button class="btn btn-primary" onclick="gerarRelatorio()">
+                <i class="fa-solid fa-eye"></i>
+                Gerar Relatório
+            </button>
+
+            <button class="btn btn-light" onclick="imprimirUltimoRelatorio()">
+                <i class="fa-solid fa-print"></i>
+                Imprimir
+            </button>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- =====================================================
+     FATURAMENTO
+===================================================== -->
+
+<div class="pagina" id="faturamento">
+
+    <div class="titulo">
+        <h2>
+            <i class="fa-solid fa-credit-card"></i>
+            Faturamento
+        </h2>
+        <p>Simulação de caixa e faturamento.</p>
+    </div>
+
+    <div class="cards">
+
+        <div class="card card-verde">
+            <i class="fa-solid fa-circle-check"></i>
+            <div>
+                <h3>Total recebido</h3>
+                <strong id="totalRecebido">R$ 0,00</strong>
+            </div>
+        </div>
+
+        <div class="card card-amarelo">
+            <i class="fa-solid fa-clock"></i>
+            <div>
+                <h3>Total pendente</h3>
+                <strong id="totalPendente">R$ 0,00</strong>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="box form-box">
+
+        <div class="form-grid">
+
+            <div class="form-group span-2">
+                <label>Paciente</label>
+                <select id="pacientePagamento" class="form-control"></select>
+            </div>
+
+            <div class="form-group span-2">
+                <label>Serviço</label>
+                <select id="servicoPagamento" class="form-control"
+                        onchange="preencherValorServico()"></select>
+            </div>
+
+            <div class="form-group">
+                <label>Valor</label>
+                <input id="valorPagamento"
+                       type="number"
+                       step="0.01"
+                       class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label>Forma de pagamento</label>
+                <select id="formaPagamento" class="form-control">
+                    <option>PIX</option>
+                    <option>Dinheiro</option>
+                    <option>Cartão de Crédito</option>
+                    <option>Cartão de Débito</option>
+                    <option>Convênio</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Status</label>
+                <select id="statusPagamento" class="form-control">
+                    <option>Pago</option>
+                    <option>Pendente</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Data</label>
+                <input id="dataPagamento"
+                       type="date"
+                       class="form-control">
+            </div>
+
+        </div>
+
+        <div class="form-actions">
+            <button class="btn btn-primary" onclick="salvarPagamento()">
+                <i class="fa-solid fa-floppy-disk"></i>
+                Salvar Pagamento
+            </button>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="box">
+
+        <div class="box-header">
+            <h3>Pagamentos</h3>
+        </div>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Paciente</th>
+                        <th>Serviço</th>
+                        <th>Valor</th>
+                        <th>Pagamento</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelaFaturamento"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- =====================================================
+     ATESTADO MÉDICO
+===================================================== -->
+
+<div class="pagina" id="atestados">
+
+    <div class="titulo">
+        <h2 id="tituloAtestado">
+            <i class="fa-solid fa-file-medical"></i>
+            Atestado Médico
+        </h2>
+        <p>Criação e gerenciamento de atestados médicos.</p>
+    </div>
+
+    <div class="box form-box">
+
+        <div class="form-grid">
+
+            <div class="form-group span-2">
+                <label>Paciente <span class="obrigatorio">*</span></label>
+                <select id="pacienteAtestado" class="form-control"></select>
+            </div>
+
+            <div class="form-group span-2">
+                <label>Profissional / Médico</label>
+                <select id="profissionalAtestado"
+                        class="form-control"
+                        onchange="preencherCRM()"></select>
+            </div>
+
+            <div class="form-group">
+                <label>CRM</label>
+                <input id="crmAtestado" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label>Data do atendimento</label>
+                <input id="dataAtestado"
+                       type="date"
+                       class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label>Dias de afastamento</label>
+                <input id="diasAfastamento"
+                       type="number"
+                       min="1"
+                       value="1"
+                       class="form-control"
+                       onchange="calcularFimAtestado()">
+            </div>
+
+            <div class="form-group">
+                <label>Início do afastamento</label>
+                <input id="inicioAfastamento"
+                       type="date"
+                       class="form-control"
+                       onchange="calcularFimAtestado()">
+            </div>
+
+            <div class="form-group">
+                <label>Fim do afastamento</label>
+                <input id="fimAfastamento"
+                       type="date"
+                       class="form-control"
+                       readonly>
+            </div>
+
+            <div class="form-group">
+                <label>CID (quando aplicável)</label>
+                <input id="cidAtestado"
+                       class="form-control"
+                       placeholder="Opcional">
+            </div>
+
+            <div class="form-group span-2">
+                <label>Motivo / Observação</label>
+                <textarea id="motivoAtestado"
+                          class="form-control"></textarea>
+            </div>
+
+        </div>
+
+        <div class="form-actions">
+
+            <button class="btn btn-light" onclick="limparAtestado()">
+                Limpar
+            </button>
+
+            <button class="btn btn-primary" onclick="salvarAtestado()">
+                <i class="fa-solid fa-floppy-disk"></i>
+                Salvar
+            </button>
+
+            <button class="btn btn-light" onclick="imprimirAtestadoFormulario()">
+                <i class="fa-solid fa-print"></i>
+                Imprimir
+            </button>
+
+        </div>
+    </div>
+
+    <br>
+
+    <div class="box">
+
+        <div class="box-header">
+            <h3>Atestados Salvos</h3>
+        </div>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Paciente</th>
+                        <th>Profissional</th>
+                        <th>Data</th>
+                        <th>Dias</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelaAtestados"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- =====================================================
+     CONFIGURAÇÕES
+===================================================== -->
+
+<div class="pagina" id="configuracoes">
+
+    <div class="titulo">
+        <h2>
+            <i class="fa-solid fa-gears"></i>
+            Configurações
+        </h2>
+        <p>Dados da clínica e cadastros administrativos.</p>
+    </div>
+
+    <div class="box form-box">
+
+        <h3>Dados da Clínica</h3>
+        <br>
+
+        <div class="form-grid">
+
+            <div class="form-group span-2">
+                <label>Nome da Clínica</label>
+                <input id="configNome"
+                       class="form-control"
+                       value="MENDES CLINIC">
+            </div>
+
+            <div class="form-group span-2">
+                <label>Descrição</label>
+                <input id="configDescricao"
+                       class="form-control"
+                       value="Sistemas de Gestão Hospitalar">
+            </div>
+
+            <div class="form-group">
+                <label>Telefone</label>
+                <input id="configTelefone" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label>E-mail</label>
+                <input id="configEmail"
+                       type="email"
+                       class="form-control">
+            </div>
+
+            <div class="form-group span-2">
+                <label>Responsável</label>
+                <input id="configResponsavel" class="form-control">
+            </div>
+
+            <div class="form-group span-4">
+                <label>Endereço</label>
+                <input id="configEndereco" class="form-control">
+            </div>
+
+        </div>
+
+        <div class="form-actions">
+            <button class="btn btn-primary" onclick="salvarConfiguracoes()">
+                <i class="fa-solid fa-floppy-disk"></i>
+                Salvar Dados da Clínica
+            </button>
+        </div>
+
+    </div>
+
+    <br>
+
+    <!-- PROFISSIONAIS -->
+    <div class="box form-box">
+
+        <h3>Profissionais</h3>
+        <br>
+
+        <div class="form-grid">
+
+            <div class="form-group span-2">
+                <label>Nome</label>
+                <input id="novoProfissionalNome" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label>CRM / Registro</label>
+                <input id="novoProfissionalCRM" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label>Especialidade</label>
+                <input id="novoProfissionalEspecialidade" class="form-control">
+            </div>
+
+        </div>
+
+        <div class="form-actions">
+            <button class="btn btn-primary" onclick="adicionarProfissional()">
+                Adicionar Profissional
+            </button>
+        </div>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>CRM / Registro</th>
+                        <th>Especialidade</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelaProfissionais"></tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <br>
+
+    <!-- TIPOS DE EXAMES -->
+    <div class="box form-box">
+
+        <h3>Tipos de Exames</h3>
+        <br>
+
+        <div style="display:flex;gap:10px">
+            <input id="novoTipoExame"
+                   class="form-control"
+                   placeholder="Ex.: Hemograma">
+
+            <button class="btn btn-primary" onclick="adicionarTipoExame()">
+                Adicionar
+            </button>
+        </div>
+
+        <br>
+
+        <div id="listaTiposExames"></div>
+
+    </div>
+
+    <br>
+
+    <!-- SERVIÇOS -->
+    <div class="box form-box">
+
+        <h3>Serviços e Valores</h3>
+        <br>
+
+        <div class="form-grid">
+
+            <div class="form-group span-2">
+                <label>Serviço</label>
+                <input id="novoServicoNome" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label>Valor</label>
+                <input id="novoServicoValor"
+                       type="number"
+                       step="0.01"
+                       class="form-control">
+            </div>
+
+        </div>
+
+        <div class="form-actions">
+            <button class="btn btn-primary" onclick="adicionarServico()">
+                Adicionar Serviço
+            </button>
+        </div>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Serviço</th>
+                        <th>Valor</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelaServicos"></tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+</section>
+</main>
+
+<!-- =====================================================
+     MODAL
+===================================================== -->
+
+<div class="modal" id="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <h3 id="modalTitulo">Informações</h3>
+            <button onclick="fecharModal()">×</button>
+        </div>
+
+        <div class="modal-body" id="modalBody"></div>
+
+        <div class="modal-footer">
+            <button class="btn btn-primary" onclick="fecharModal()">
+                Fechar
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<!-- ÁREA DE IMPRESSÃO -->
+<div id="areaImpressao" class="area-impressao"></div>
+
+<script>
+
+/* =====================================================
+   UTILIDADES
+===================================================== */
+
+function escapar(texto){
+    return String(texto ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+}
+
+function hojeISO(){
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,"0");
+    const dia = String(d.getDate()).padStart(2,"0");
+    return `${y}-${m}-${dia}`;
+}
+
+function dataBR(data){
+    if(!data) return "-";
+
+    if(data.includes("/")){
+        return data;
+    }
+
+    const p = data.split("-");
+    if(p.length !== 3) return data;
+
+    return `${p[2]}/${p[1]}/${p[0]}`;
+}
+
+function dataISO(data){
+    if(!data) return "";
+
+    if(data.includes("-")){
+        return data;
+    }
+
+    const p = data.split("/");
+    if(p.length !== 3) return "";
+
+    return `${p[2]}-${p[1]}-${p[0]}`;
+}
+
+function moeda(valor){
+    return Number(valor || 0).toLocaleString(
+        "pt-BR",
+        {
+            style:"currency",
+            currency:"BRL"
+        }
+    );
+}
+
+/* =====================================================
+   DADOS PADRÃO
+===================================================== */
+
+const pacientesPadrao = [
+    {
+        nome:"Ana Paula Santos",
+        cpf:"123.456.789-00",
+        sus:"898 0000 1111 2222",
+        telefone:"(75) 99999-1001",
+        email:"ana@exemplo.com",
+        nascimento:"1990-05-10",
+        sexo:"Feminino",
+        estadoCivil:"Casado(a)",
+        rg:"12.345.678-9",
+        cidade:"Conceição do Coité",
+        estado:"BA",
+        atendente:"Recepção",
+        alergias:"Nenhuma informada"
+    },
+    {
+        nome:"Carlos Mendes",
+        cpf:"987.654.321-00",
+        sus:"898 0000 2222 3333",
+        telefone:"(75) 99999-1002",
+        email:"carlos@exemplo.com",
+        nascimento:"1985-08-15",
+        sexo:"Masculino",
+        cidade:"Conceição do Coité",
+        estado:"BA",
+        atendente:"Recepção"
+    },
+    {
+        nome:"Maria Souza Oliveira",
+        cpf:"111.222.333-44",
+        sus:"898 0012 3456 7890",
+        telefone:"(75) 99800-1234",
+        email:"maria@exemplo.com",
+        cidade:"Conceição do Coité",
+        estado:"BA",
+        atendente:"Recepção"
+    }
+];
+
+const agendamentosPadrao = [
+    {
+        data:hojeISO(),
+        horario:"08:00",
+        paciente:"Ana Paula Santos",
+        especialidade:"Clínica Geral",
+        profissional:"Dr. João Alves",
+        situacao:"Confirmado",
+        observacoes:""
+    },
+    {
+        data:hojeISO(),
+        horario:"08:30",
+        paciente:"Carlos Mendes",
+        especialidade:"Cardiologia",
+        profissional:"Dra. Marina Souza",
+        situacao:"Em atendimento",
+        observacoes:""
+    },
+    {
+        data:hojeISO(),
+        horario:"09:00",
+        paciente:"Maria Souza Oliveira",
+        especialidade:"Clínica Geral",
+        profissional:"Dr. João Alves",
+        situacao:"Aguardar",
+        observacoes:""
+    }
+];
+
+const profissionaisPadrao = [
+    {
+        nome:"Dr. João Alves",
+        crm:"CRM-BA 12345",
+        especialidade:"Clínica Geral"
+    },
+    {
+        nome:"Dra. Marina Souza",
+        crm:"CRM-BA 23456",
+        especialidade:"Cardiologia"
+    },
+    {
+        nome:"Dra. Juliana Lima",
+        crm:"CRM-BA 34567",
+        especialidade:"Ginecologia"
+    },
+    {
+        nome:"Dr. Felipe Rocha",
+        crm:"CRM-BA 45678",
+        especialidade:"Ortopedia"
+    }
+];
+
+const tiposExamesPadrao = [
+    "Hemograma",
+    "Glicemia",
+    "Raio-X",
+    "Ultrassonografia",
+    "Eletrocardiograma",
+    "Tomografia"
+];
+
+const servicosPadrao = [
+    {nome:"Consulta Clínica Geral",valor:150},
+    {nome:"Consulta Pediátrica",valor:180},
+    {nome:"Consulta Cardiológica",valor:220},
+    {nome:"Consulta Ortopédica",valor:200}
+];
+
+/* =====================================================
+   BANCO LOCAL
+===================================================== */
+
+let pacientes =
+JSON.parse(localStorage.getItem("mendes_pacientes")) || pacientesPadrao;
+
+let agendamentos =
+JSON.parse(localStorage.getItem("mendes_agendamentos")) || agendamentosPadrao;
+
+let prontuarios =
+JSON.parse(localStorage.getItem("mendes_prontuarios")) || [];
+
+let prescricoes =
+JSON.parse(localStorage.getItem("mendes_prescricoes")) || [];
+
+let exames =
+JSON.parse(localStorage.getItem("mendes_exames")) || [];
+
+let faturamentos =
+JSON.parse(localStorage.getItem("mendes_faturamentos")) || [];
+
+let atestados =
+JSON.parse(localStorage.getItem("mendes_atestados")) || [];
+
+let profissionais =
+JSON.parse(localStorage.getItem("mendes_profissionais")) || profissionaisPadrao;
+
+let tiposExames =
+JSON.parse(localStorage.getItem("mendes_tipos_exames")) || tiposExamesPadrao;
+
+let servicos =
+JSON.parse(localStorage.getItem("mendes_servicos")) || servicosPadrao;
+
+let pacienteEditando = null;
+let agendamentoEditando = null;
+let prontuarioEditando = null;
+let prescricaoEditando = null;
+let exameEditando = null;
+let pagamentoEditando = null;
+let atestadoEditando = null;
+let horarioSelecionado = "";
+let ultimoRelatorio = "";
+
+let calendarioData = new Date();
+
+/* =====================================================
+   NAVEGAÇÃO
+===================================================== */
+
+function mostrarPagina(id,elemento=null){
+
+    document.querySelectorAll(".pagina").forEach(p=>{
+        p.classList.remove("ativa");
+    });
+
+    const pagina = document.getElementById(id);
+
+    if(pagina){
+        pagina.classList.add("ativa");
+    }
+
+    document.querySelectorAll(".menu-item").forEach(item=>{
+        item.classList.remove("ativo");
+    });
+
+    if(elemento){
+        elemento.classList.add("ativo");
+    }
+
+    atualizarSistema();
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+}
+
+function abrirSubmenu(id,elemento){
+
+    const submenu = document.getElementById(id);
+
+    submenu.classList.toggle("aberto");
+
+    document.querySelectorAll(".menu-item").forEach(item=>{
+        item.classList.remove("ativo");
+    });
+
+    elemento.classList.add("ativo");
+}
+
+/* =====================================================
+   PACIENTES
+===================================================== */
+
+function novoPaciente(){
+
+    pacienteEditando = null;
+
+    document.getElementById("formPaciente").reset();
+    document.getElementById("idade").value = "";
+
+    document.getElementById("tituloPaciente").innerHTML =
+    '<i class="fa-solid fa-user-plus"></i> Cadastro de Paciente';
+
+    document.getElementById("btnSalvarPaciente").innerHTML =
+    '<i class="fa-solid fa-floppy-disk"></i> Salvar Paciente';
+
+    mostrarPagina("novoPaciente");
+}
+
+document.getElementById("nascimento").addEventListener("change",calcularIdade);
+
+function calcularIdade(){
+
+    const valor = document.getElementById("nascimento").value;
+
+    if(!valor){
+        document.getElementById("idade").value="";
+        return;
+    }
+
+    const nascimento = new Date(valor+"T00:00:00");
+    const hoje = new Date();
+
+    let idade = hoje.getFullYear()-nascimento.getFullYear();
+
+    const mes = hoje.getMonth()-nascimento.getMonth();
+
+    if(
+        mes<0 ||
+        (mes===0 && hoje.getDate()<nascimento.getDate())
+    ){
+        idade--;
+    }
+
+    document.getElementById("idade").value = idade+" anos";
+}
+
+document.getElementById("formPaciente").addEventListener("submit",function(event){
+
+    event.preventDefault();
+
+    const paciente = {
+        nome:document.getElementById("nomePaciente").value.trim(),
+        nomeSocial:document.getElementById("nomeSocial").value.trim(),
+        nascimento:document.getElementById("nascimento").value,
+        sexo:document.getElementById("sexo").value,
+        estadoCivil:document.getElementById("estadoCivil").value,
+        cpf:document.getElementById("cpf").value.trim(),
+        sus:document.getElementById("sus").value.trim(),
+        rg:document.getElementById("rg").value.trim(),
+        orgaoEmissor:document.getElementById("orgaoEmissor").value,
+        nomeMae:document.getElementById("nomeMae").value.trim(),
+        nomePai:document.getElementById("nomePai").value.trim(),
+        telefoneFixo:document.getElementById("telefoneFixo").value.trim(),
+        telefone:document.getElementById("telefone").value.trim(),
+        email:document.getElementById("email").value.trim(),
+        endereco:document.getElementById("endereco").value.trim(),
+        numero:document.getElementById("numero").value.trim(),
+        bairro:document.getElementById("bairro").value.trim(),
+        cidade:document.getElementById("cidade").value.trim(),
+        estado:document.getElementById("estado").value,
+        cep:document.getElementById("cep").value.trim(),
+        atendente:document.getElementById("atendenteCadastro").value.trim(),
+        alergias:document.getElementById("alergias").value.trim(),
+        observacoes:document.getElementById("observacoesPaciente").value.trim()
+    };
+
+    if(pacienteEditando!==null){
+
+        const nomeAnterior = pacientes[pacienteEditando].nome;
+
+        pacientes[pacienteEditando]=paciente;
+
+        agendamentos.forEach(a=>{
+            if(a.paciente===nomeAnterior) a.paciente=paciente.nome;
+        });
+
+        prontuarios.forEach(p=>{
+            if(p.paciente===nomeAnterior) p.paciente=paciente.nome;
+        });
+
+        prescricoes.forEach(p=>{
+            if(p.paciente===nomeAnterior) p.paciente=paciente.nome;
+        });
+
+        exames.forEach(e=>{
+            if(e.paciente===nomeAnterior) e.paciente=paciente.nome;
+        });
+
+        faturamentos.forEach(f=>{
+            if(f.paciente===nomeAnterior) f.paciente=paciente.nome;
+        });
+
+        atestados.forEach(a=>{
+            if(a.paciente===nomeAnterior) a.paciente=paciente.nome;
+        });
+
+        alert("Paciente atualizado com sucesso!");
+
+    }else{
+
+        pacientes.push(paciente);
+        alert("Paciente cadastrado com sucesso!");
+    }
+
+    pacienteEditando=null;
+
+    salvarDados();
+    atualizarSistema();
+    mostrarPagina("pacientes");
+});
+
+function listarPacientes(){
+
+    const tabela=document.getElementById("tabelaPacientes");
+
+    const campo=document.getElementById("pesquisaPaciente");
+
+    const pesquisa=campo
+        ? campo.value.toLowerCase()
+        : "";
+
+    tabela.innerHTML="";
+
+    pacientes.forEach((p,indice)=>{
+
+        const texto=(
+            (p.nome||"")+" "+
+            (p.cpf||"")+" "+
+            (p.sus||"")
+        ).toLowerCase();
+
+        if(!texto.includes(pesquisa)) return;
+
+        tabela.innerHTML+=`
+        <tr>
+            <td>${escapar(p.nome||"-")}</td>
+            <td>${escapar(p.cpf||"-")}</td>
+            <td>${escapar(p.sus||"-")}</td>
+            <td>${escapar(p.telefone||"-")}</td>
+            <td>${escapar(p.atendente||"-")}</td>
+            <td>
+
+                <button class="btn btn-light btn-icon"
+                        onclick="visualizarPaciente(${indice})">
+                    <i class="fa-solid fa-eye"></i>
+                </button>
+
+                <button class="btn btn-light btn-icon"
+                        onclick="editarPaciente(${indice})">
+                    <i class="fa-solid fa-pen"></i>
+                </button>
+
+                <button class="btn btn-light btn-icon"
+                        onclick="abrirProntuarioPaciente('${escapar(p.nome)}')">
+                    <i class="fa-solid fa-folder-open"></i>
+                </button>
+
+                <button class="btn btn-danger btn-icon"
+                        onclick="excluirPaciente(${indice})">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+
+            </td>
+        </tr>`;
+    });
+}
+
+function visualizarPaciente(indice){
+
+    const p=pacientes[indice];
+
+    abrirModal(
+        "Dados do Paciente",
+        `
+        <strong>Nome:</strong> ${escapar(p.nome||"-")}<br>
+        <strong>Nome social:</strong> ${escapar(p.nomeSocial||"-")}<br>
+        <strong>CPF:</strong> ${escapar(p.cpf||"-")}<br>
+        <strong>Cartão SUS:</strong> ${escapar(p.sus||"-")}<br>
+        <strong>RG:</strong> ${escapar(p.rg||"-")}<br>
+        <strong>Nascimento:</strong> ${dataBR(p.nascimento)}<br>
+        <strong>Sexo:</strong> ${escapar(p.sexo||"-")}<br>
+        <strong>Telefone:</strong> ${escapar(p.telefone||"-")}<br>
+        <strong>E-mail:</strong> ${escapar(p.email||"-")}<br>
+        <strong>Endereço:</strong>
+        ${escapar(p.endereco||"-")} ${escapar(p.numero||"")}<br>
+        <strong>Bairro:</strong> ${escapar(p.bairro||"-")}<br>
+        <strong>Cidade:</strong> ${escapar(p.cidade||"-")} -
+        ${escapar(p.estado||"-")}<br>
+        <strong>Alergias:</strong> ${escapar(p.alergias||"-")}<br>
+        <strong>Atendente responsável:</strong>
+        ${escapar(p.atendente||"-")}<br><br>
+        <strong>Observações:</strong><br>
+        ${escapar(p.observacoes||"-")}
+        `
+    );
+}
+
+function editarPaciente(indice){
+
+    pacienteEditando=indice;
+
+    const p=pacientes[indice];
+
+    const mapa={
+        nomePaciente:"nome",
+        nomeSocial:"nomeSocial",
+        nascimento:"nascimento",
+        sexo:"sexo",
+        estadoCivil:"estadoCivil",
+        cpf:"cpf",
+        sus:"sus",
+        rg:"rg",
+        orgaoEmissor:"orgaoEmissor",
+        nomeMae:"nomeMae",
+        nomePai:"nomePai",
+        telefoneFixo:"telefoneFixo",
+        telefone:"telefone",
+        email:"email",
+        endereco:"endereco",
+        numero:"numero",
+        bairro:"bairro",
+        cidade:"cidade",
+        estado:"estado",
+        cep:"cep",
+        atendenteCadastro:"atendente",
+        alergias:"alergias",
+        observacoesPaciente:"observacoes"
+    };
+
+    Object.entries(mapa).forEach(([id,chave])=>{
+        document.getElementById(id).value=p[chave]||"";
+    });
+
+    calcularIdade();
+
+    document.getElementById("tituloPaciente").innerHTML=
+    '<i class="fa-solid fa-user-pen"></i> Editar Paciente';
+
+    document.getElementById("btnSalvarPaciente").innerHTML=
+    '<i class="fa-solid fa-floppy-disk"></i> Salvar Alterações';
+
+    mostrarPagina("novoPaciente");
+}
+
+function excluirPaciente(indice){
+
+    if(!confirm("Deseja realmente excluir este paciente?")){
+        return;
+    }
+
+    pacientes.splice(indice,1);
+
+    salvarDados();
+    atualizarSistema();
+}
+
+function limparPaciente(){
+
+    document.getElementById("formPaciente").reset();
+    document.getElementById("idade").value="";
+}
+
+/* =====================================================
+   SELECTS
+===================================================== */
+
+function preencherSelectPacientes(){
+
+    const ids=[
+        "pacienteAgendamento",
+        "pacienteProntuario",
+        "pacientePrescricao",
+        "pacienteExame",
+        "pacienteRelatorio",
+        "pacientePagamento",
+        "pacienteAtestado"
+    ];
+
+    ids.forEach(id=>{
+
+        const select=document.getElementById(id);
+        if(!select) return;
+
+        const atual=select.value;
+
+        select.innerHTML='<option value="">Selecione o paciente</option>';
+
+        pacientes.forEach((p,i)=>{
+            select.innerHTML+=
+            `<option value="${i}">${escapar(p.nome)}</option>`;
+        });
+
+        if(atual!=="" && pacientes[atual]){
+            select.value=atual;
+        }
+    });
+}
+
+function preencherSelectProfissionais(){
+
+    const ids=[
+        "profissional",
+        "profissionalProntuario",
+        "profissionalPrescricao",
+        "profissionalRelatorio",
+        "profissionalAtestado"
+    ];
+
+    ids.forEach(id=>{
+
+        const select=document.getElementById(id);
+        if(!select) return;
+
+        const atual=select.value;
+
+        select.innerHTML='<option value="">Selecione o profissional</option>';
+
+        profissionais.forEach((p,i)=>{
+            select.innerHTML+=
+            `<option value="${i}">${escapar(p.nome)}</option>`;
+        });
+
+        if(atual!=="" && profissionais[atual]){
+            select.value=atual;
+        }
+    });
+}
+
+/* =====================================================
+   AGENDAMENTOS
+===================================================== */
+
+function novoAgendamento(){
+
+    agendamentoEditando=null;
+    horarioSelecionado="";
+
+    preencherSelectPacientes();
+    preencherSelectProfissionais();
+
+    document.getElementById("pacienteAgendamento").value="";
+    document.getElementById("especialidade").value="Clínica Geral";
+    document.getElementById("dataAgendamento").value=hojeISO();
+    document.getElementById("observacoesAgenda").value="";
+    document.getElementById("dadosPacienteAgenda").innerHTML=
+    "Selecione um paciente.";
+
+    document.querySelectorAll(".horario").forEach(b=>{
+        b.classList.remove("selecionado");
+    });
+
+    document.getElementById("tituloAgendamento").innerHTML=
+    '<i class="fa-solid fa-calendar-plus"></i> Agendamento de Consulta';
+
+    document.getElementById("btnSalvarAgendamento").innerHTML=
+    '<i class="fa-solid fa-calendar-check"></i> Confirmar Agendamento';
+
+    mostrarPagina("agendamento");
+}
+
+function mostrarPacienteAgenda(){
+
+    const indice=document.getElementById("pacienteAgendamento").value;
+    const box=document.getElementById("dadosPacienteAgenda");
+
+    if(indice===""){
+        box.innerHTML="Selecione um paciente.";
+        return;
+    }
+
+    const p=pacientes[indice];
+
+    box.innerHTML=`
+        <strong>${escapar(p.nome)}</strong><br><br>
+        CPF: ${escapar(p.cpf||"-")}<br>
+        Cartão SUS: ${escapar(p.sus||"-")}<br>
+        Telefone: ${escapar(p.telefone||"-")}
+    `;
+}
+
+function selecionarHorario(event,horario){
+
+    event.preventDefault();
+
+    horarioSelecionado=horario;
+
+    document.querySelectorAll(".horario").forEach(b=>{
+        b.classList.remove("selecionado");
+    });
+
+    event.currentTarget.classList.add("selecionado");
+}
+
+function salvarAgendamento(){
+
+    const pacienteIndice=document.getElementById("pacienteAgendamento").value;
+    const profissionalIndice=document.getElementById("profissional").value;
+
+    if(pacienteIndice===""){
+        alert("Selecione um paciente.");
+        return;
+    }
+
+    if(profissionalIndice===""){
+        alert("Selecione um profissional.");
+        return;
+    }
+
+    if(!document.getElementById("dataAgendamento").value){
+        alert("Selecione a data.");
+        return;
+    }
+
+    if(!horarioSelecionado){
+        alert("Selecione um horário.");
+        return;
+    }
+
+    const registro={
+        data:document.getElementById("dataAgendamento").value,
+        horario:horarioSelecionado,
+        paciente:pacientes[pacienteIndice].nome,
+        especialidade:document.getElementById("especialidade").value,
+        profissional:profissionais[profissionalIndice].nome,
+        situacao:
+            agendamentoEditando!==null
+            ? agendamentos[agendamentoEditando].situacao
+            : "Confirmado",
+        observacoes:document.getElementById("observacoesAgenda").value.trim(),
+        motivoCancelamento:
+            agendamentoEditando!==null
+            ? agendamentos[agendamentoEditando].motivoCancelamento||""
+            : ""
+    };
+
+    if(agendamentoEditando!==null){
+
+        agendamentos[agendamentoEditando]=registro;
+        alert("Agendamento atualizado com sucesso!");
+
+    }else{
+
+        agendamentos.push(registro);
+        alert("Agendamento realizado com sucesso!");
+    }
+
+    agendamentoEditando=null;
+
+    salvarDados();
+    atualizarSistema();
+    mostrarPagina("listaAgendamentos");
+}
+
+function listarAgendamentos(){
+
+    const tabela=document.getElementById("tabelaAgendamentos");
+
+    const pesquisa=(
+        document.getElementById("pesquisaAgendamento")?.value||""
+    ).toLowerCase();
+
+    tabela.innerHTML="";
+
+    agendamentos.forEach((a,i)=>{
+
+        const texto=(
+            a.paciente+" "+
+            a.profissional+" "+
+            a.especialidade+" "+
+            a.situacao
+        ).toLowerCase();
+
+        if(!texto.includes(pesquisa)) return;
+
+        tabela.innerHTML+=`
+        <tr>
+            <td>${dataBR(a.data)}</td>
+            <td>${escapar(a.horario)}</td>
+            <td>${escapar(a.paciente)}</td>
+            <td>${escapar(a.especialidade)}</td>
+            <td>${escapar(a.profissional)}</td>
+            <td>
+                <span class="status ${classeStatus(a.situacao)}">
+                    ${escapar(a.situacao)}
+                </span>
+            </td>
+            <td>
+
+                <button class="btn btn-light btn-icon"
+                        onclick="visualizarAgendamento(${i})">
+                    <i class="fa-solid fa-eye"></i>
+                </button>
+
+                <button class="btn btn-light btn-icon"
+                        onclick="editarAgendamento(${i})">
+                    <i class="fa-solid fa-pen"></i>
+                </button>
+
+                <button class="btn btn-danger btn-icon"
+                        onclick="cancelarAgendamento(${i})">
+                    <i class="fa-solid fa-ban"></i>
+                </button>
+
+            </td>
+        </tr>`;
+    });
+}
+
+function visualizarAgendamento(indice){
+
+    const a=agendamentos[indice];
+
+    abrirModal(
+        "Dados do Agendamento",
+        `
+        <strong>Paciente:</strong> ${escapar(a.paciente)}<br>
+        <strong>Data:</strong> ${dataBR(a.data)}<br>
+        <strong>Horário:</strong> ${escapar(a.horario)}<br>
+        <strong>Especialidade:</strong> ${escapar(a.especialidade)}<br>
+        <strong>Profissional:</strong> ${escapar(a.profissional)}<br>
+        <strong>Situação:</strong> ${escapar(a.situacao)}<br>
+        <strong>Observações:</strong> ${escapar(a.observacoes||"-")}<br>
+        <strong>Motivo do cancelamento:</strong>
+        ${escapar(a.motivoCancelamento||"-")}
+        `
+    );
+}
+
+function editarAgendamento(indice){
+
+    agendamentoEditando=indice;
+
+    const a=agendamentos[indice];
+
+    preencherSelectPacientes();
+    preencherSelectProfissionais();
+
+    const pacienteIndice=pacientes.findIndex(p=>p.nome===a.paciente);
+    const profissionalIndice=profissionais.findIndex(p=>p.nome===a.profissional);
+
+    document.getElementById("pacienteAgendamento").value=
+        pacienteIndice>=0 ? pacienteIndice : "";
+
+    document.getElementById("profissional").value=
+        profissionalIndice>=0 ? profissionalIndice : "";
+
+    document.getElementById("especialidade").value=a.especialidade;
+    document.getElementById("dataAgendamento").value=dataISO(a.data);
+    document.getElementById("observacoesAgenda").value=a.observacoes||"";
+
+    horarioSelecionado=a.horario;
+
+    mostrarPacienteAgenda();
+
+    document.querySelectorAll(".horario").forEach(b=>{
+        b.classList.toggle(
+            "selecionado",
+            b.innerText===a.horario
+        );
+    });
+
+    document.getElementById("tituloAgendamento").innerHTML=
+    '<i class="fa-solid fa-pen"></i> Editar Agendamento';
+
+    document.getElementById("btnSalvarAgendamento").innerHTML=
+    '<i class="fa-solid fa-floppy-disk"></i> Salvar Alterações';
+
+    mostrarPagina("agendamento");
+}
+
+function cancelarAgendamento(indice){
+
+    if(agendamentos[indice].situacao==="Cancelado"){
+        alert("Este agendamento já está cancelado.");
+        return;
+    }
+
+    const motivo=prompt(
+        "Informe o motivo do cancelamento:",
+        ""
+    );
+
+    if(motivo===null) return;
+
+    if(!confirm("Confirmar o cancelamento deste agendamento?")){
+        return;
+    }
+
+    agendamentos[indice].situacao="Cancelado";
+    agendamentos[indice].motivoCancelamento=motivo;
+
+    salvarDados();
+    atualizarSistema();
+
+    alert("Agendamento cancelado.");
+}
+
+function listarCancelamentos(){
+
+    const tabela=document.getElementById("tabelaCancelamentos");
+
+    const pesquisa=(
+        document.getElementById("pesquisaCancelamento")?.value||""
+    ).toLowerCase();
+
+    tabela.innerHTML="";
+
+    agendamentos.forEach((a,i)=>{
+
+        if(!a.paciente.toLowerCase().includes(pesquisa)){
+            return;
+        }
+
+        tabela.innerHTML+=`
+        <tr>
+            <td>${escapar(a.paciente)}</td>
+            <td>${dataBR(a.data)}</td>
+            <td>${escapar(a.horario)}</td>
+            <td>${escapar(a.profissional)}</td>
+            <td>
+                <span class="status ${classeStatus(a.situacao)}">
+                    ${escapar(a.situacao)}
+                </span>
+            </td>
+            <td>
+                ${
+                    a.situacao!=="Cancelado"
+                    ? `<button class="btn btn-danger"
+                               onclick="cancelarAgendamento(${i})">
+                           <i class="fa-solid fa-ban"></i>
+                           Cancelar
+                       </button>`
+                    : "Cancelado"
+                }
+            </td>
+        </tr>`;
+    });
+}
+
+function limparAgendamento(){
+
+    document.getElementById("pacienteAgendamento").value="";
+    document.getElementById("observacoesAgenda").value="";
+    document.getElementById("dadosPacienteAgenda").innerHTML=
+    "Selecione um paciente.";
+
+    horarioSelecionado="";
+
+    document.querySelectorAll(".horario").forEach(b=>{
+        b.classList.remove("selecionado");
+    });
+}
+
+/* =====================================================
+   CALENDÁRIO
+===================================================== */
+
+function montarCalendario(){
+
+    const grid=document.getElementById("calendarioGrid");
+
+    if(!grid) return;
+
+    grid.innerHTML="";
+
+    const ano=calendarioData.getFullYear();
+    const mes=calendarioData.getMonth();
+
+    const nomesMeses=[
+        "Janeiro","Fevereiro","Março","Abril",
+        "Maio","Junho","Julho","Agosto",
+        "Setembro","Outubro","Novembro","Dezembro"
+    ];
+
+    document.getElementById("tituloCalendario").innerText=
+        `${nomesMeses[mes]} de ${ano}`;
+
+    ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"].forEach(d=>{
+        grid.innerHTML+=
+        `<div class="calendario-dia-semana">${d}</div>`;
+    });
+
+    const primeiroDia=new Date(ano,mes,1).getDay();
+    const ultimoDia=new Date(ano,mes+1,0).getDate();
+
+    for(let i=0;i<primeiroDia;i++){
+        grid.innerHTML+=`<div class="calendario-dia vazio"></div>`;
+    }
+
+    for(let dia=1;dia<=ultimoDia;dia++){
+
+        const data=
+            `${ano}-${String(mes+1).padStart(2,"0")}-${String(dia).padStart(2,"0")}`;
+
+        const quantidade=agendamentos.filter(a=>
+            dataISO(a.data)===data &&
+            a.situacao!=="Cancelado"
+        ).length;
+
+        grid.innerHTML+=`
+        <div class="calendario-dia ${quantidade?"tem-agendamento":""}"
+             onclick="verAgendaDia('${data}')">
+
+            <div class="numero-dia">${dia}</div>
+
+            ${
+                quantidade
+                ? `<div class="marcador-agenda">
+                       ${quantidade} agendamento(s)
+                   </div>`
+                : ""
+            }
+
+        </div>`;
+    }
+}
+
+function mesAnterior(){
+    calendarioData.setMonth(calendarioData.getMonth()-1);
+    montarCalendario();
+}
+
+function mesSeguinte(){
+    calendarioData.setMonth(calendarioData.getMonth()+1);
+    montarCalendario();
+}
+
+function verAgendaDia(data){
+
+    const lista=agendamentos.filter(a=>dataISO(a.data)===data);
+
+    let html=`<strong>Data:</strong> ${dataBR(data)}<br><br>`;
+
+    if(!lista.length){
+        html+="Nenhum agendamento para este dia.";
+    }else{
+        lista.forEach(a=>{
+            html+=`
+            <div style="padding:10px;border-bottom:1px solid #ddd">
+                <strong>${escapar(a.horario)}</strong> -
+                ${escapar(a.paciente)}<br>
+                ${escapar(a.especialidade)} -
+                ${escapar(a.profissional)}<br>
+                Situação: ${escapar(a.situacao)}
+            </div>`;
+        });
+    }
+
+    abrirModal("Agenda do Dia",html);
+}
+
+/* =====================================================
+   DASHBOARD / ATENDIMENTOS
+===================================================== */
+
+function atualizarAgendaDashboard(){
+
+    const tabela=document.getElementById("agendaDashboard");
+
+    tabela.innerHTML="";
+
+    agendamentos
+        .filter(a=>a.situacao!=="Cancelado")
+        .slice(0,5)
+        .forEach((a)=>{
+
+            const indice=agendamentos.indexOf(a);
+
+            tabela.innerHTML+=`
+            <tr>
+                <td>${escapar(a.horario)}</td>
+                <td>${escapar(a.paciente)}</td>
+                <td>${escapar(a.especialidade)}</td>
+                <td>${escapar(a.profissional)}</td>
+                <td>
+                    <span class="status ${classeStatus(a.situacao)}">
+                        ${escapar(a.situacao)}
+                    </span>
+                </td>
+                <td>
+                    <button class="btn btn-light btn-icon"
+                            onclick="visualizarAgendamento(${indice})">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+
+                    <button class="btn btn-light btn-icon"
+                            onclick="editarAgendamento(${indice})">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
+                </td>
+            </tr>`;
+        });
+}
+
+function listarAtendimentos(){
+
+    const tabela=document.getElementById("tabelaAtendimentos");
+
+    tabela.innerHTML="";
+
+    agendamentos
+        .filter(a=>a.situacao!=="Cancelado")
+        .forEach(a=>{
+
+            const indice=agendamentos.indexOf(a);
+
+            tabela.innerHTML+=`
+            <tr>
+                <td>${escapar(a.horario)}</td>
+                <td>${escapar(a.paciente)}</td>
+                <td>${escapar(a.especialidade)}</td>
+                <td>${escapar(a.profissional)}</td>
+                <td>
+                    <span class="status ${classeStatus(a.situacao)}">
+                        ${escapar(a.situacao)}
+                    </span>
+                </td>
+                <td>
+
+                    <button class="btn btn-success"
+                            onclick="iniciarAtendimento(${indice})">
+                        <i class="fa-solid fa-play"></i>
+                        Iniciar
+                    </button>
+
+                    <button class="btn btn-light btn-icon"
+                            onclick="abrirProntuarioPaciente('${escapar(a.paciente)}')">
+                        <i class="fa-solid fa-folder-open"></i>
+                    </button>
+
+                    <button class="btn btn-light btn-icon"
+                            onclick="editarSituacaoAtendimento(${indice})">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
+
+                </td>
+            </tr>`;
+        });
+
+    atualizarCardsAtendimento();
+}
+
+function iniciarAtendimento(indice){
+
+    agendamentos[indice].situacao="Em atendimento";
+
+    salvarDados();
+    atualizarSistema();
+
+    alert("Atendimento iniciado!");
+}
+
+function editarSituacaoAtendimento(indice){
+
+    const nova=prompt(
+        "Situação: Confirmado, Aguardar, Em atendimento, Realizado ou Falta",
+        agendamentos[indice].situacao
+    );
+
+    if(!nova) return;
+
+    agendamentos[indice].situacao=nova;
+
+    salvarDados();
+    atualizarSistema();
+}
+
+function atualizarCardsAtendimento(){
+
+    const contar=status=>
+        agendamentos.filter(a=>a.situacao===status).length;
+
+    document.getElementById("atendimentoAguardando").innerText=
+        contar("Aguardar");
+
+    document.getElementById("atendimentoEmAndamento").innerText=
+        contar("Em atendimento");
+
+    document.getElementById("atendimentoConfirmado").innerText=
+        contar("Confirmado");
+
+    document.getElementById("atendimentoFaltas").innerText=
+        contar("Falta");
+}
+
+/* =====================================================
+   PRONTUÁRIO
+===================================================== */
+
+function abrirProntuario(){
+
+    prontuarioEditando=null;
+    mostrarPagina("prontuario");
+    preencherSelectPacientes();
+}
+
+function abrirProntuarioPaciente(nome){
+
+    mostrarPagina("prontuario");
+
+    const indice=pacientes.findIndex(p=>p.nome===nome);
+
+    if(indice>=0){
+        document.getElementById("pacienteProntuario").value=indice;
+        carregarHistoricoPaciente();
+    }
+}
+
+function pesquisarPacienteProntuario(){
+
+    const termo=document
+        .getElementById("pesquisaProntuario")
+        .value
+        .toLowerCase();
+
+    const indice=pacientes.findIndex(p=>
+        (p.nome||"").toLowerCase().includes(termo) ||
+        (p.cpf||"").toLowerCase().includes(termo)
+    );
+
+    if(indice>=0 && termo.length>=2){
+        document.getElementById("pacienteProntuario").value=indice;
+        carregarHistoricoPaciente();
+    }
+}
+
+function carregarHistoricoPaciente(){
+
+    const indice=document.getElementById("pacienteProntuario").value;
+    const box=document.getElementById("dadosPacienteProntuario");
+
+    if(indice===""){
+        box.innerHTML="Selecione um paciente para visualizar seus dados.";
+        listarProntuarios();
+        return;
+    }
+
+    const p=pacientes[indice];
+
+    document.getElementById("alergiasProntuario").value=p.alergias||"";
+
+    const atendimentosPaciente=agendamentos.filter(a=>a.paciente===p.nome);
+    const prescricoesPaciente=prescricoes.filter(a=>a.paciente===p.nome);
+    const examesPaciente=exames.filter(a=>a.paciente===p.nome);
+
+    box.innerHTML=`
+        <strong>${escapar(p.nome)}</strong><br>
+        CPF: ${escapar(p.cpf||"-")} |
+        SUS: ${escapar(p.sus||"-")}<br>
+        Nascimento: ${dataBR(p.nascimento)} |
+        Telefone: ${escapar(p.telefone||"-")}<br>
+        Alergias: ${escapar(p.alergias||"-")}<br><br>
+
+        <strong>Resumo do histórico:</strong><br>
+        Atendimentos/agendamentos: ${atendimentosPaciente.length}<br>
+        Prescrições: ${prescricoesPaciente.length}<br>
+        Exames: ${examesPaciente.length}
+    `;
+
+    listarProntuarios(p.nome);
+}
+
+function salvarProntuario(){
+
+    const indice=document.getElementById("pacienteProntuario").value;
+
+    if(indice===""){
+        alert("Selecione um paciente.");
+        return;
+    }
+
+    const arquivo=document.getElementById("anexoProntuario").files[0];
+
+    const registro={
+        paciente:pacientes[indice].nome,
+        data:document.getElementById("dataProntuario").value,
+        profissional:
+            profissionais[
+                document.getElementById("profissionalProntuario").value
+            ]?.nome || "",
+        diagnostico:document.getElementById("diagnosticoProntuario").value.trim(),
+        queixa:document.getElementById("queixaProntuario").value.trim(),
+        evolucao:document.getElementById("evolucaoProntuario").value.trim(),
+        alergias:document.getElementById("alergiasProntuario").value.trim(),
+        observacao:document.getElementById("observacaoProntuario").value.trim(),
+        anexo:arquivo ? arquivo.name : (
+            prontuarioEditando!==null
+            ? prontuarios[prontuarioEditando].anexo||""
+            : ""
+        )
+    };
+
+    if(prontuarioEditando!==null){
+        prontuarios[prontuarioEditando]=registro;
+        prontuarioEditando=null;
+        alert("Prontuário atualizado!");
+    }else{
+        prontuarios.push(registro);
+        alert("Prontuário salvo!");
+    }
+
+    pacientes[indice].alergias=registro.alergias;
+
+    salvarDados();
+    atualizarSistema();
+    limparProntuario();
+}
+
+function listarProntuarios(filtroPaciente=""){
+
+    const tabela=document.getElementById("tabelaProntuarios");
+
+    tabela.innerHTML="";
+
+    prontuarios.forEach((p,i)=>{
+
+        if(filtroPaciente && p.paciente!==filtroPaciente){
+            return;
+        }
+
+        tabela.innerHTML+=`
+        <tr>
+            <td>${escapar(p.paciente)}</td>
+            <td>${dataBR(p.data)}</td>
+            <td>${escapar(p.profissional||"-")}</td>
+            <td>${escapar(p.diagnostico||"-")}</td>
+            <td>${escapar(p.anexo||"Sem anexo")}</td>
+            <td>
+
+                <button class="btn btn-light btn-icon"
+                        onclick="visualizarProntuario(${i})">
+                    <i class="fa-solid fa-eye"></i>
+                </button>
+
+                <button class="btn btn-light btn-icon"
+                        onclick="editarProntuario(${i})">
+                    <i class="fa-solid fa-pen"></i>
+                </button>
+
+                <button class="btn btn-light btn-icon"
+                        onclick="imprimirProntuario(${i})">
+                    <i class="fa-solid fa-print"></i>
+                </button>
+
+                <button class="btn btn-danger btn-icon"
+                        onclick="excluirProntuario(${i})">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+
+            </td>
+        </tr>`;
+    });
+}
+
+function visualizarProntuario(i){
+
+    const p=prontuarios[i];
+
+    abrirModal(
+        "Prontuário",
+        `
+        <strong>Paciente:</strong> ${escapar(p.paciente)}<br>
+        <strong>Data:</strong> ${dataBR(p.data)}<br>
+        <strong>Profissional:</strong> ${escapar(p.profissional||"-")}<br>
+        <strong>Diagnóstico:</strong> ${escapar(p.diagnostico||"-")}<br>
+        <strong>Alergias:</strong> ${escapar(p.alergias||"-")}<br><br>
+
+        <strong>Queixa:</strong><br>
+        ${escapar(p.queixa||"-")}<br><br>
+
+        <strong>Evolução:</strong><br>
+        ${escapar(p.evolucao||"-")}<br><br>
+
+        <strong>Observações:</strong><br>
+        ${escapar(p.observacao||"-")}<br><br>
+
+        <strong>Anexo:</strong>
+        ${escapar(p.anexo||"Sem anexo")}
+        `
+    );
+}
+
+function editarProntuario(i){
+
+    prontuarioEditando=i;
+
+    const p=prontuarios[i];
+
+    const pacienteIndice=pacientes.findIndex(x=>x.nome===p.paciente);
+    const profissionalIndice=profissionais.findIndex(x=>x.nome===p.profissional);
+
+    document.getElementById("pacienteProntuario").value=
+        pacienteIndice>=0 ? pacienteIndice : "";
+
+    document.getElementById("dataProntuario").value=dataISO(p.data);
+
+    document.getElementById("profissionalProntuario").value=
+        profissionalIndice>=0 ? profissionalIndice : "";
+
+    document.getElementById("diagnosticoProntuario").value=p.diagnostico||"";
+    document.getElementById("queixaProntuario").value=p.queixa||"";
+    document.getElementById("evolucaoProntuario").value=p.evolucao||"";
+    document.getElementById("alergiasProntuario").value=p.alergias||"";
+    document.getElementById("observacaoProntuario").value=p.observacao||"";
+
+    carregarHistoricoPaciente();
+
+    window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function excluirProntuario(i){
+
+    if(!confirm("Excluir este registro do prontuário?")) return;
+
+    prontuarios.splice(i,1);
+
+    salvarDados();
+    atualizarSistema();
+}
+
+function limparProntuario(){
+
+    prontuarioEditando=null;
+
+    [
+        "dataProntuario",
+        "diagnosticoProntuario",
+        "queixaProntuario",
+        "evolucaoProntuario",
+        "observacaoProntuario"
+    ].forEach(id=>{
+        document.getElementById(id).value="";
+    });
+
+    document.getElementById("anexoProntuario").value="";
+}
+
+function imprimirProntuario(i){
+
+    const p=prontuarios[i];
+
+    imprimirConteudo(`
+        <h1>MENDES CLINIC</h1>
+        <h2>PRONTUÁRIO</h2>
+
+        <p><strong>Paciente:</strong> ${escapar(p.paciente)}</p>
+        <p><strong>Data:</strong> ${dataBR(p.data)}</p>
+        <p><strong>Profissional:</strong> ${escapar(p.profissional||"-")}</p>
+        <p><strong>Diagnóstico:</strong> ${escapar(p.diagnostico||"-")}</p>
+        <p><strong>Alergias:</strong> ${escapar(p.alergias||"-")}</p>
+        <p><strong>Queixa:</strong> ${escapar(p.queixa||"-")}</p>
+        <p><strong>Evolução:</strong> ${escapar(p.evolucao||"-")}</p>
+        <p><strong>Observações:</strong> ${escapar(p.observacao||"-")}</p>
+    `);
+}
+
+function imprimirProntuarioAtual(){
+
+    const indice=document.getElementById("pacienteProntuario").value;
+
+    if(indice===""){
+        alert("Selecione um paciente.");
+        return;
+    }
+
+    const p=pacientes[indice];
+
+    const historico=prontuarios
+        .filter(x=>x.paciente===p.nome)
+        .map(x=>`
+            <hr>
+            <p><strong>Data:</strong> ${dataBR(x.data)}</p>
+            <p><strong>Profissional:</strong> ${escapar(x.profissional||"-")}</p>
+            <p><strong>Diagnóstico:</strong> ${escapar(x.diagnostico||"-")}</p>
+            <p><strong>Queixa:</strong> ${escapar(x.queixa||"-")}</p>
+            <p><strong>Evolução:</strong> ${escapar(x.evolucao||"-")}</p>
+        `).join("");
+
+    imprimirConteudo(`
+        <h1>MENDES CLINIC</h1>
+        <h2>HISTÓRICO DO PACIENTE</h2>
+
+        <p><strong>Paciente:</strong> ${escapar(p.nome)}</p>
+        <p><strong>CPF:</strong> ${escapar(p.cpf||"-")}</p>
+        <p><strong>Cartão SUS:</strong> ${escapar(p.sus||"-")}</p>
+        <p><strong>Alergias:</strong> ${escapar(p.alergias||"-")}</p>
+
+        ${historico || "<p>Nenhum registro de prontuário.</p>"}
+    `);
+}
+
+/* =====================================================
+   PRESCRIÇÕES
+===================================================== */
+
+function adicionarMedicamento(dados={}){
+
+    const container=document.getElementById("listaMedicamentos");
+
+    const div=document.createElement("div");
+
+    div.className="medicamento-linha";
+
+    div.innerHTML=`
+        <div class="form-grid">
+
+            <div class="form-group span-2">
+                <label>Medicamento</label>
+                <input class="form-control med-nome"
+                       value="${escapar(dados.nome||"")}">
+            </div>
+
+            <div class="form-group">
+                <label>Dose</label>
+                <input class="form-control med-dose"
+                       value="${escapar(dados.dose||"")}">
+            </div>
+
+            <div class="form-group">
+                <label>Frequência</label>
+                <input class="form-control med-frequencia"
+                       value="${escapar(dados.frequencia||"")}">
+            </div>
+
+            <div class="form-group span-2">
+                <label>Via de administração</label>
+                <select class="form-control med-via">
+                    <option>Oral</option>
+                    <option>Intramuscular</option>
+                    <option>Intravenosa</option>
+                    <option>Subcutânea</option>
+                    <option>Tópica</option>
+                    <option>Inalatória</option>
+                    <option>Outra</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Duração</label>
+                <input class="form-control med-duracao"
+                       placeholder="Ex.: 7 dias"
+                       value="${escapar(dados.duracao||"")}">
+            </div>
+
+            <div class="form-group">
+                <label>&nbsp;</label>
+                <button type="button"
+                        class="btn btn-danger"
+                        onclick="this.closest('.medicamento-linha').remove()">
+                    Remover
+                </button>
+            </div>
+
+        </div>
+    `;
+
+    container.appendChild(div);
+
+    if(dados.via){
+        div.querySelector(".med-via").value=dados.via;
+    }
+}
+
+function obterMedicamentosFormulario(){
+
+    return [...document.querySelectorAll(".medicamento-linha")]
+        .map(linha=>({
+            nome:linha.querySelector(".med-nome").value.trim(),
+            dose:linha.querySelector(".med-dose").value.trim(),
+            frequencia:linha.querySelector(".med-frequencia").value.trim(),
+            via:linha.querySelector(".med-via").value,
+            duracao:linha.querySelector(".med-duracao").value.trim()
+        }))
+        .filter(m=>m.nome);
+}
+
+function salvarPrescricao(){
+
+    const pacienteIndice=document.getElementById("pacientePrescricao").value;
+    const profissionalIndice=document.getElementById("profissionalPrescricao").value;
+
+    if(pacienteIndice===""){
+        alert("Selecione o paciente.");
+        return;
+    }
+
+    if(profissionalIndice===""){
+        alert("Selecione o profissional.");
+        return;
+    }
+
+    const medicamentos=obterMedicamentosFormulario();
+
+    if(!medicamentos.length){
+        alert("Adicione pelo menos um medicamento.");
+        return;
+    }
+
+    const registro={
+        paciente:pacientes[pacienteIndice].nome,
+        profissional:profissionais[profissionalIndice].nome,
+        medicamentos,
+        orientacao:document.getElementById("orientacaoPrescricao").value.trim(),
+        data:hojeISO()
+    };
+
+    if(prescricaoEditando!==null){
+        prescricoes[prescricaoEditando]=registro;
+        prescricaoEditando=null;
+        alert("Prescrição atualizada!");
+    }else{
+        prescricoes.push(registro);
+        alert("Prescrição salva!");
+    }
+
+    salvarDados();
+    atualizarSistema();
+    limparPrescricao();
+}
+
+function limparPrescricao(){
+
+    document.getElementById("listaMedicamentos").innerHTML="";
+    document.getElementById("orientacaoPrescricao").value="";
+    adicionarMedicamento();
+}
+
+function listarPrescricoes(){
+
+    const tabela=document.getElementById("tabelaPrescricoes");
+
+    tabela.innerHTML="";
+
+    prescricoes.forEach((p,i)=>{
+
+        const nomes=(p.medicamentos||[])
+            .map(m=>m.nome)
+            .join(", ");
+
+        tabela.innerHTML+=`
+        <tr>
+            <td>${escapar(p.paciente)}</td>
+            <td>${escapar(p.profissional)}</td>
+            <td>${escapar(nomes||"-")}</td>
+            <td>
+
+                <button class="btn btn-light btn-icon"
+                        onclick="visualizarPrescricao(${i})">
+                    <i class="fa-solid fa-eye"></i>
+                </button>
+
+                <button class="btn btn-light btn-icon"
+                        onclick="editarPrescricao(${i})">
+                    <i class="fa-solid fa-pen"></i>
+                </button>
+
+                <button class="btn btn-light btn-icon"
+                        onclick="imprimirPrescricao(${i})">
+                    <i class="fa-solid fa-print"></i>
+                </button>
+
+                <button class="btn btn-danger btn-icon"
+                        onclick="excluirPrescricao(${i})">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+
+            </td>
+        </tr>`;
+    });
+}
+
+function visualizarPrescricao(i){
+
+    const p=prescricoes[i];
+
+    const medicamentos=(p.medicamentos||[])
+        .map(m=>`
+            <div style="margin-bottom:10px">
+                <strong>${escapar(m.nome)}</strong><br>
+                Dose: ${escapar(m.dose||"-")} |
+                Frequência: ${escapar(m.frequencia||"-")} |
+                Via: ${escapar(m.via||"-")} |
+                Duração: ${escapar(m.duracao||"-")}
+            </div>
+        `).join("");
+
+    abrirModal(
+        "Prescrição",
+        `
+        <strong>Paciente:</strong> ${escapar(p.paciente)}<br>
+        <strong>Profissional:</strong> ${escapar(p.profissional)}<br><br>
+        ${medicamentos}
+        <strong>Orientações:</strong><br>
+        ${escapar(p.orientacao||"-")}
+        `
+    );
+}
+
+function editarPrescricao(i){
+
+    prescricaoEditando=i;
+
+    const p=prescricoes[i];
+
+    const pi=pacientes.findIndex(x=>x.nome===p.paciente);
+    const pr=profissionais.findIndex(x=>x.nome===p.profissional);
+
+    document.getElementById("pacientePrescricao").value=
+        pi>=0 ? pi : "";
+
+    document.getElementById("profissionalPrescricao").value=
+        pr>=0 ? pr : "";
+
+    document.getElementById("orientacaoPrescricao").value=
+        p.orientacao||"";
+
+    document.getElementById("listaMedicamentos").innerHTML="";
+
+    (p.medicamentos||[]).forEach(m=>adicionarMedicamento(m));
+
+    window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function excluirPrescricao(i){
+
+    if(!confirm("Excluir esta prescrição?")) return;
+
+    prescricoes.splice(i,1);
+
+    salvarDados();
+    atualizarSistema();
+}
+
+function imprimirPrescricao(i){
+
+    const p=prescricoes[i];
+
+    const meds=(p.medicamentos||[])
+        .map(m=>`
+            <p>
+                <strong>${escapar(m.nome)}</strong><br>
+                Dose: ${escapar(m.dose||"-")}<br>
+                Frequência: ${escapar(m.frequencia||"-")}<br>
+                Via: ${escapar(m.via||"-")}<br>
+                Duração: ${escapar(m.duracao||"-")}
+            </p>
+        `).join("");
+
+    imprimirConteudo(`
+        <h1>MENDES CLINIC</h1>
+        <h2>PRESCRIÇÃO</h2>
+
+        <p><strong>Paciente:</strong> ${escapar(p.paciente)}</p>
+        <p><strong>Profissional:</strong> ${escapar(p.profissional)}</p>
+
+        ${meds}
+
+        <p><strong>Orientações:</strong>
+        ${escapar(p.orientacao||"-")}</p>
+
+        <div class="assinatura">
+            _______________________________________<br>
+            ${escapar(p.profissional)}
+        </div>
+    `);
+}
+
+function imprimirPrescricaoFormulario(){
+
+    const pacienteIndice=document.getElementById("pacientePrescricao").value;
+    const profissionalIndice=document.getElementById("profissionalPrescricao").value;
+
+    if(pacienteIndice==="" || profissionalIndice===""){
+        alert("Selecione paciente e profissional.");
+        return;
+    }
+
+    const temp={
+        paciente:pacientes[pacienteIndice].nome,
+        profissional:profissionais[profissionalIndice].nome,
+        medicamentos:obterMedicamentosFormulario(),
+        orientacao:document.getElementById("orientacaoPrescricao").value
+    };
+
+    const meds=temp.medicamentos.map(m=>`
+        <p>
+            <strong>${escapar(m.nome)}</strong><br>
+            ${escapar(m.dose)} -
+            ${escapar(m.frequencia)} -
+            ${escapar(m.via)} -
+            ${escapar(m.duracao)}
+        </p>
+    `).join("");
+
+    imprimirConteudo(`
+        <h1>MENDES CLINIC</h1>
+        <h2>PRESCRIÇÃO</h2>
+        <p><strong>Paciente:</strong> ${escapar(temp.paciente)}</p>
+        <p><strong>Profissional:</strong> ${escapar(temp.profissional)}</p>
+        ${meds}
+        <p><strong>Orientações:</strong>
+        ${escapar(temp.orientacao||"-")}</p>
+    `);
+}
+
+/* =====================================================
+   EXAMES
+===================================================== */
+
+function preencherTiposExame(){
+
+    const select=document.getElementById("tipoExame");
+
+    const atual=select.value;
+
+    select.innerHTML="";
+
+    tiposExames.forEach(tipo=>{
+        select.innerHTML+=`<option>${escapar(tipo)}</option>`;
+    });
+
+    if(tiposExames.includes(atual)){
+        select.value=atual;
+    }
+}
+
+function salvarExame(){
+
+    const pacienteIndice=document.getElementById("pacienteExame").value;
+
+    if(pacienteIndice===""){
+        alert("Selecione um paciente.");
+        return;
+    }
+
+    const arquivo=document.getElementById("anexoExame").files[0];
+
+    const registro={
+        paciente:pacientes[pacienteIndice].nome,
+        tipo:document.getElementById("tipoExame").value,
+        data:document.getElementById("dataExame").value,
+        situacao:document.getElementById("statusExame").value,
+        resultado:document.getElementById("resultadoExame").value.trim(),
+        observacao:document.getElementById("observacaoExame").value.trim(),
+        anexo:arquivo ? arquivo.name : (
+            exameEditando!==null
+            ? exames[exameEditando].anexo||""
+            : ""
+        )
+    };
+
+    if(exameEditando!==null){
+        exames[exameEditando]=registro;
+        exameEditando=null;
+        alert("Exame atualizado!");
+    }else{
+        exames.push(registro);
+        alert("Exame cadastrado!");
+    }
+
+    salvarDados();
+    atualizarSistema();
+    limparExame();
+}
+
+function listarExames(){
+
+    const tabela=document.getElementById("tabelaExames");
+
+    tabela.innerHTML="";
+
+    exames.forEach((e,i)=>{
+
+        tabela.innerHTML+=`
+        <tr>
+            <td>${escapar(e.paciente)}</td>
+            <td>${escapar(e.tipo)}</td>
+            <td>${dataBR(e.data)}</td>
+            <td>
+                <span class="status ${classeStatusExame(e.situacao)}">
+                    ${escapar(e.situacao)}
+                </span>
+            </td>
+            <td>${escapar(e.resultado||"-")}</td>
+            <td>${escapar(e.anexo||"Sem anexo")}</td>
+            <td>
+
+                <button class="btn btn-light btn-icon"
+                        onclick="visualizarExame(${i})">
+                    <i class="fa-solid fa-eye"></i>
+                </button>
+
+                <button class="btn btn-light btn-icon"
+                        onclick="editarExame(${i})">
+                    <i class="fa-solid fa-pen"></i>
+                </button>
+
+                <button class="btn btn-danger btn-icon"
+                        onclick="excluirExame(${i})">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+
+            </td>
+        </tr>`;
+    });
+}
+
+function visualizarExame(i){
+
+    const e=exames[i];
+
+    abrirModal(
+        "Exame",
+        `
+        <strong>Paciente:</strong> ${escapar(e.paciente)}<br>
+        <strong>Exame:</strong> ${escapar(e.tipo)}<br>
+        <strong>Data:</strong> ${dataBR(e.data)}<br>
+        <strong>Status:</strong> ${escapar(e.situacao)}<br>
+        <strong>Resultado:</strong> ${escapar(e.resultado||"-")}<br>
+        <strong>Anexo:</strong> ${escapar(e.anexo||"Sem anexo")}<br><br>
+        <strong>Observações:</strong><br>
+        ${escapar(e.observacao||"-")}
+        `
+    );
+}
+
+function editarExame(i){
+
+    exameEditando=i;
+
+    const e=exames[i];
+
+    const pi=pacientes.findIndex(p=>p.nome===e.paciente);
+
+    document.getElementById("pacienteExame").value=
+        pi>=0 ? pi : "";
+
+    document.getElementById("tipoExame").value=e.tipo;
+    document.getElementById("dataExame").value=dataISO(e.data);
+    document.getElementById("statusExame").value=e.situacao;
+    document.getElementById("resultadoExame").value=e.resultado||"";
+    document.getElementById("observacaoExame").value=e.observacao||"";
+
+    window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function excluirExame(i){
+
+    if(!confirm("Excluir este exame?")) return;
+
+    exames.splice(i,1);
+
+    salvarDados();
+    atualizarSistema();
+}
+
+function limparExame(){
+
+    exameEditando=null;
+
+    document.getElementById("dataExame").value=hojeISO();
+    document.getElementById("statusExame").value="Solicitado";
+    document.getElementById("resultadoExame").value="";
+    document.getElementById("observacaoExame").value="";
+    document.getElementById("anexoExame").value="";
+}
+
+/* =====================================================
+   FATURAMENTO
+===================================================== */
+
+function preencherServicos(){
+
+    const select=document.getElementById("servicoPagamento");
+
+    const atual=select.value;
+
+    select.innerHTML='<option value="">Selecione o serviço</option>';
+
+    servicos.forEach((s,i)=>{
+        select.innerHTML+=`
+            <option value="${i}">
+                ${escapar(s.nome)} - ${moeda(s.valor)}
+            </option>
+        `;
+    });
+
+    if(atual!=="" && servicos[atual]){
+        select.value=atual;
+    }
+}
+
+function preencherValorServico(){
+
+    const indice=document.getElementById("servicoPagamento").value;
+
+    if(indice===""){
+        document.getElementById("valorPagamento").value="";
+        return;
+    }
+
+    document.getElementById("valorPagamento").value=
+        Number(servicos[indice].valor).toFixed(2);
+}
+
+function salvarPagamento(){
+
+    const pacienteIndice=document.getElementById("pacientePagamento").value;
+    const servicoIndice=document.getElementById("servicoPagamento").value;
+
+    if(pacienteIndice===""){
+        alert("Selecione o paciente.");
+        return;
+    }
+
+    if(servicoIndice===""){
+        alert("Selecione o serviço.");
+        return;
+    }
+
+    const registro={
+        paciente:pacientes[pacienteIndice].nome,
+        servico:servicos[servicoIndice].nome,
+        valor:Number(document.getElementById("valorPagamento").value||0),
+        pagamento:document.getElementById("formaPagamento").value,
+        situacao:document.getElementById("statusPagamento").value,
+        data:document.getElementById("dataPagamento").value
+    };
+
+    if(pagamentoEditando!==null){
+        faturamentos[pagamentoEditando]=registro;
+        pagamentoEditando=null;
+        alert("Pagamento atualizado!");
+    }else{
+        faturamentos.push(registro);
+        alert("Pagamento salvo!");
+    }
+
+    salvarDados();
+    atualizarSistema();
+    limparPagamento();
+}
+
+function listarFaturamento(){
+
+    const tabela=document.getElementById("tabelaFaturamento");
+
+    tabela.innerHTML="";
+
+    faturamentos.forEach((f,i)=>{
+
+        tabela.innerHTML+=`
+        <tr>
+            <td>${escapar(f.paciente)}</td>
+            <td>${escapar(f.servico)}</td>
+            <td>${moeda(f.valor)}</td>
+            <td>${escapar(f.pagamento)}</td>
+            <td>
+                <span class="status ${f.situacao==="Pago"?"pago":"pendente"}">
+                    ${escapar(f.situacao)}
+                </span>
+            </td>
+            <td>
+
+                <button class="btn btn-light btn-icon"
+                        onclick="editarPagamento(${i})">
+                    <i class="fa-solid fa-pen"></i>
+                </button>
+
+                <button class="btn btn-danger btn-icon"
+                        onclick="excluirPagamento(${i})">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+
+            </td>
+        </tr>`;
+    });
+
+    atualizarTotaisFaturamento();
+}
+
+function editarPagamento(i){
+
+    pagamentoEditando=i;
+
+    const f=faturamentos[i];
+
+    const pi=pacientes.findIndex(p=>p.nome===f.paciente);
+    const si=servicos.findIndex(s=>s.nome===f.servico);
+
+    document.getElementById("pacientePagamento").value=
+        pi>=0 ? pi : "";
+
+    document.getElementById("servicoPagamento").value=
+        si>=0 ? si : "";
+
+    document.getElementById("valorPagamento").value=f.valor;
+    document.getElementById("formaPagamento").value=f.pagamento;
+    document.getElementById("statusPagamento").value=f.situacao;
+    document.getElementById("dataPagamento").value=dataISO(f.data);
+
+    window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function excluirPagamento(i){
+
+    if(!confirm("Excluir este pagamento?")) return;
+
+    faturamentos.splice(i,1);
+
+    salvarDados();
+    atualizarSistema();
+}
+
+function limparPagamento(){
+
+    pagamentoEditando=null;
+
+    document.getElementById("valorPagamento").value="";
+    document.getElementById("statusPagamento").value="Pago";
+    document.getElementById("dataPagamento").value=hojeISO();
+}
+
+function atualizarTotaisFaturamento(){
+
+    const recebido=faturamentos
+        .filter(f=>f.situacao==="Pago")
+        .reduce((s,f)=>s+Number(f.valor||0),0);
+
+    const pendente=faturamentos
+        .filter(f=>f.situacao==="Pendente")
+        .reduce((s,f)=>s+Number(f.valor||0),0);
+
+    document.getElementById("totalRecebido").innerText=moeda(recebido);
+    document.getElementById("totalPendente").innerText=moeda(pendente);
+}
+
+/* =====================================================
+   ATESTADOS
+===================================================== */
+
+function novoAtestado(){
+
+    atestadoEditando=null;
+
+    mostrarPagina("atestados");
+
+    limparAtestado();
+
+    document.getElementById("tituloAtestado").innerHTML=
+    '<i class="fa-solid fa-file-medical"></i> Atestado Médico';
+}
+
+function preencherCRM(){
+
+    const indice=document.getElementById("profissionalAtestado").value;
+
+    document.getElementById("crmAtestado").value=
+        indice!=="" && profissionais[indice]
+        ? profissionais[indice].crm||""
+        : "";
+}
+
+function calcularFimAtestado(){
+
+    const inicio=document.getElementById("inicioAfastamento").value;
+    const dias=Number(document.getElementById("diasAfastamento").value||1);
+
+    if(!inicio) return;
+
+    const d=new Date(inicio+"T00:00:00");
+
+    d.setDate(d.getDate()+Math.max(dias-1,0));
+
+    const resultado=
+        `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+
+    document.getElementById("fimAfastamento").value=resultado;
+}
+
+function salvarAtestado(){
+
+    const pacienteIndice=document.getElementById("pacienteAtestado").value;
+    const profissionalIndice=document.getElementById("profissionalAtestado").value;
+
+    if(pacienteIndice===""){
+        alert("Selecione o paciente.");
+        return;
+    }
+
+    if(profissionalIndice===""){
+        alert("Selecione o profissional.");
+        return;
+    }
+
+    const registro={
+        paciente:pacientes[pacienteIndice].nome,
+        profissional:profissionais[profissionalIndice].nome,
+        crm:document.getElementById("crmAtestado").value.trim(),
+        data:document.getElementById("dataAtestado").value,
+        dias:Number(document.getElementById("diasAfastamento").value||1),
+        inicio:document.getElementById("inicioAfastamento").value,
+        fim:document.getElementById("fimAfastamento").value,
+        cid:document.getElementById("cidAtestado").value.trim(),
+        motivo:document.getElementById("motivoAtestado").value.trim()
+    };
+
+    if(atestadoEditando!==null){
+        atestados[atestadoEditando]=registro;
+        atestadoEditando=null;
+        alert("Atestado atualizado!");
+    }else{
+        atestados.push(registro);
+        alert("Atestado salvo!");
+    }
+
+    salvarDados();
+    atualizarSistema();
+    limparAtestado();
+}
+
+function listarAtestados(){
+
+    const tabela=document.getElementById("tabelaAtestados");
+
+    tabela.innerHTML="";
+
+    atestados.forEach((a,i)=>{
+
+        tabela.innerHTML+=`
+        <tr>
+            <td>${escapar(a.paciente)}</td>
+            <td>${escapar(a.profissional)}</td>
+            <td>${dataBR(a.data)}</td>
+            <td>${a.dias}</td>
+            <td>
+
+                <button class="btn btn-light btn-icon"
+                        onclick="visualizarAtestado(${i})">
+                    <i class="fa-solid fa-eye"></i>
+                </button>
+
+                <button class="btn btn-light btn-icon"
+                        onclick="editarAtestado(${i})">
+                    <i class="fa-solid fa-pen"></i>
+                </button>
+
+                <button class="btn btn-light btn-icon"
+                        onclick="imprimirAtestado(${i})">
+                    <i class="fa-solid fa-print"></i>
+                </button>
+
+                <button class="btn btn-danger btn-icon"
+                        onclick="excluirAtestado(${i})">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+
+            </td>
+        </tr>`;
+    });
+}
+
+function visualizarAtestado(i){
+
+    const a=atestados[i];
+
+    abrirModal(
+        "Atestado Médico",
+        `
+        <strong>Paciente:</strong> ${escapar(a.paciente)}<br>
+        <strong>Profissional:</strong> ${escapar(a.profissional)}<br>
+        <strong>CRM:</strong> ${escapar(a.crm||"-")}<br>
+        <strong>Data:</strong> ${dataBR(a.data)}<br>
+        <strong>Afastamento:</strong>
+        ${a.dias} dia(s), de ${dataBR(a.inicio)} até ${dataBR(a.fim)}<br>
+        <strong>CID:</strong> ${escapar(a.cid||"Não informado")}<br><br>
+        <strong>Observação:</strong><br>
+        ${escapar(a.motivo||"-")}
+        `
+    );
+}
+
+function editarAtestado(i){
+
+    atestadoEditando=i;
+
+    const a=atestados[i];
+
+    const pi=pacientes.findIndex(p=>p.nome===a.paciente);
+    const pr=profissionais.findIndex(p=>p.nome===a.profissional);
+
+    document.getElementById("pacienteAtestado").value=
+        pi>=0 ? pi : "";
+
+    document.getElementById("profissionalAtestado").value=
+        pr>=0 ? pr : "";
+
+    document.getElementById("crmAtestado").value=a.crm||"";
+    document.getElementById("dataAtestado").value=dataISO(a.data);
+    document.getElementById("diasAfastamento").value=a.dias||1;
+    document.getElementById("inicioAfastamento").value=dataISO(a.inicio);
+    document.getElementById("fimAfastamento").value=dataISO(a.fim);
+    document.getElementById("cidAtestado").value=a.cid||"";
+    document.getElementById("motivoAtestado").value=a.motivo||"";
+
+    document.getElementById("tituloAtestado").innerHTML=
+    '<i class="fa-solid fa-pen"></i> Editar Atestado Médico';
+
+    window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function excluirAtestado(i){
+
+    if(!confirm("Excluir este atestado?")) return;
+
+    atestados.splice(i,1);
+
+    salvarDados();
+    atualizarSistema();
+}
+
+function limparAtestado(){
+
+    document.getElementById("pacienteAtestado").value="";
+    document.getElementById("profissionalAtestado").value="";
+    document.getElementById("crmAtestado").value="";
+    document.getElementById("dataAtestado").value=hojeISO();
+    document.getElementById("diasAfastamento").value=1;
+    document.getElementById("inicioAfastamento").value=hojeISO();
+    document.getElementById("cidAtestado").value="";
+    document.getElementById("motivoAtestado").value="";
+
+    calcularFimAtestado();
+}
+
+function imprimirAtestado(i){
+
+    const a=atestados[i];
+
+    imprimirConteudo(`
+        <h1>MENDES CLINIC</h1>
+        <h2>ATESTADO MÉDICO</h2>
+
+        <p style="margin-top:40px;line-height:2">
+            Atesta-se, para os devidos fins, que
+            <strong>${escapar(a.paciente)}</strong>
+            necessita de afastamento de suas atividades pelo período de
+            <strong>${a.dias} dia(s)</strong>,
+            com início em <strong>${dataBR(a.inicio)}</strong>
+            e término em <strong>${dataBR(a.fim)}</strong>.
+        </p>
+
+        ${
+            a.cid
+            ? `<p><strong>CID informado:</strong> ${escapar(a.cid)}</p>`
+            : ""
+        }
+
+        ${
+            a.motivo
+            ? `<p><strong>Observação:</strong> ${escapar(a.motivo)}</p>`
+            : ""
+        }
+
+        <p style="margin-top:30px">
+            Data: ${dataBR(a.data)}
+        </p>
+
+        <div class="assinatura">
+            _______________________________________<br>
+            ${escapar(a.profissional)}<br>
+            ${escapar(a.crm||"")}
+        </div>
+    `);
+}
+
+function imprimirAtestadoFormulario(){
+
+    const pacienteIndice=document.getElementById("pacienteAtestado").value;
+    const profissionalIndice=document.getElementById("profissionalAtestado").value;
+
+    if(pacienteIndice==="" || profissionalIndice===""){
+        alert("Selecione paciente e profissional.");
+        return;
+    }
+
+    const temp={
+        paciente:pacientes[pacienteIndice].nome,
+        profissional:profissionais[profissionalIndice].nome,
+        crm:document.getElementById("crmAtestado").value,
+        data:document.getElementById("dataAtestado").value,
+        dias:document.getElementById("diasAfastamento").value,
+        inicio:document.getElementById("inicioAfastamento").value,
+        fim:document.getElementById("fimAfastamento").value,
+        cid:document.getElementById("cidAtestado").value,
+        motivo:document.getElementById("motivoAtestado").value
+    };
+
+    imprimirConteudo(`
+        <h1>MENDES CLINIC</h1>
+        <h2>ATESTADO MÉDICO</h2>
+
+        <p style="margin-top:40px;line-height:2">
+            Atesta-se, para os devidos fins, que
+            <strong>${escapar(temp.paciente)}</strong>
+            necessita de afastamento por
+            <strong>${escapar(temp.dias)} dia(s)</strong>,
+            de ${dataBR(temp.inicio)} até ${dataBR(temp.fim)}.
+        </p>
+
+        ${
+            temp.cid
+            ? `<p><strong>CID informado:</strong> ${escapar(temp.cid)}</p>`
+            : ""
+        }
+
+        <p>${escapar(temp.motivo||"")}</p>
+
+        <div class="assinatura">
+            _______________________________________<br>
+            ${escapar(temp.profissional)}<br>
+            ${escapar(temp.crm)}
+        </div>
+    `);
+}
+
+/* =====================================================
+   RELATÓRIOS
+===================================================== */
+
+function atualizarRelatorios(){
+
+    document.getElementById("relatorioPacientes").innerText=pacientes.length;
+    document.getElementById("relatorioAgendamentos").innerText=agendamentos.length;
+    document.getElementById("relatorioExames").innerText=exames.length;
+
+    const total=faturamentos
+        .filter(f=>f.situacao==="Pago")
+        .reduce((s,f)=>s+Number(f.valor||0),0);
+
+    document.getElementById("relatorioFaturamento").innerText=moeda(total);
+}
+
+function gerarRelatorio(){
+
+    const tipo=document.getElementById("tipoRelatorio").value;
+    const pacienteIndice=document.getElementById("pacienteRelatorio").value;
+    const profissionalIndice=document.getElementById("profissionalRelatorio").value;
+    const inicio=document.getElementById("relatorioInicio").value;
+    const fim=document.getElementById("relatorioFim").value;
+
+    const paciente=
+        pacienteIndice!=="" ? pacientes[pacienteIndice]?.nome : "";
+
+    const profissional=
+        profissionalIndice!=="" ? profissionais[profissionalIndice]?.nome : "";
+
+    function dentroPeriodo(data){
+
+        const iso=dataISO(data);
+
+        if(inicio && iso<inicio) return false;
+        if(fim && iso>fim) return false;
+
+        return true;
+    }
+
+    let conteudo=`<h3>Relatório de ${escapar(tipo)}</h3><br>`;
+
+    if(tipo==="Pacientes"){
+
+        let lista=pacientes;
+
+        if(paciente){
+            lista=lista.filter(p=>p.nome===paciente);
+        }
+
+        conteudo+=`<strong>Total:</strong> ${lista.length}<br><br>`;
+
+        lista.forEach(p=>{
+            conteudo+=`
+                ${escapar(p.nome)} -
+                ${escapar(p.cpf||"CPF não informado")}<br>
+            `;
+        });
+    }
+
+    if(tipo==="Agendamentos" || tipo==="Atendimentos"){
+
+        let lista=agendamentos.filter(a=>dentroPeriodo(a.data));
+
+        if(paciente) lista=lista.filter(a=>a.paciente===paciente);
+        if(profissional) lista=lista.filter(a=>a.profissional===profissional);
+
+        const cancelados=lista.filter(a=>a.situacao==="Cancelado").length;
+        const realizados=lista.filter(a=>a.situacao==="Realizado").length;
+
+        conteudo+=`
+            <strong>Total:</strong> ${lista.length}<br>
+            <strong>Realizados:</strong> ${realizados}<br>
+            <strong>Cancelados:</strong> ${cancelados}<br><br>
+        `;
+
+        lista.forEach(a=>{
+            conteudo+=`
+                ${dataBR(a.data)} -
+                ${escapar(a.horario)} -
+                ${escapar(a.paciente)} -
+                ${escapar(a.profissional)} -
+                ${escapar(a.situacao)}<br>
+            `;
+        });
+    }
+
+    if(tipo==="Prontuários"){
+
+        let lista=prontuarios.filter(p=>dentroPeriodo(p.data));
+
+        if(paciente) lista=lista.filter(p=>p.paciente===paciente);
+        if(profissional) lista=lista.filter(p=>p.profissional===profissional);
+
+        conteudo+=`<strong>Total:</strong> ${lista.length}<br><br>`;
+
+        lista.forEach(p=>{
+            conteudo+=`
+                ${dataBR(p.data)} -
+                ${escapar(p.paciente)} -
+                ${escapar(p.diagnostico||"-")}<br>
+            `;
+        });
+    }
+
+    if(tipo==="Prescrições"){
+
+        let lista=prescricoes;
+
+        if(paciente) lista=lista.filter(p=>p.paciente===paciente);
+        if(profissional) lista=lista.filter(p=>p.profissional===profissional);
+
+        conteudo+=`<strong>Total:</strong> ${lista.length}<br><br>`;
+
+        lista.forEach(p=>{
+            conteudo+=`
+                ${escapar(p.paciente)} -
+                ${escapar(p.profissional)}<br>
+            `;
+        });
+    }
+
+    if(tipo==="Exames"){
+
+        let lista=exames.filter(e=>dentroPeriodo(e.data));
+
+        if(paciente) lista=lista.filter(e=>e.paciente===paciente);
+
+        conteudo+=`<strong>Total:</strong> ${lista.length}<br><br>`;
+
+        lista.forEach(e=>{
+            conteudo+=`
+                ${dataBR(e.data)} -
+                ${escapar(e.paciente)} -
+                ${escapar(e.tipo)} -
+                ${escapar(e.situacao)}<br>
+            `;
+        });
+    }
+
+    if(tipo==="Faturamento"){
+
+        let lista=faturamentos.filter(f=>dentroPeriodo(f.data));
+
+        if(paciente) lista=lista.filter(f=>f.paciente===paciente);
+
+        const total=lista.reduce((s,f)=>s+Number(f.valor||0),0);
+        const recebido=lista
+            .filter(f=>f.situacao==="Pago")
+            .reduce((s,f)=>s+Number(f.valor||0),0);
+
+        const pendente=lista
+            .filter(f=>f.situacao==="Pendente")
+            .reduce((s,f)=>s+Number(f.valor||0),0);
+
+        conteudo+=`
+            <strong>Total lançado:</strong> ${moeda(total)}<br>
+            <strong>Recebido:</strong> ${moeda(recebido)}<br>
+            <strong>Pendente:</strong> ${moeda(pendente)}<br><br>
+        `;
+
+        lista.forEach(f=>{
+            conteudo+=`
+                ${escapar(f.paciente)} -
+                ${escapar(f.servico)} -
+                ${moeda(f.valor)} -
+                ${escapar(f.situacao)}<br>
+            `;
+        });
+    }
+
+    if(tipo==="Atestados"){
+
+        let lista=atestados.filter(a=>dentroPeriodo(a.data));
+
+        if(paciente) lista=lista.filter(a=>a.paciente===paciente);
+        if(profissional) lista=lista.filter(a=>a.profissional===profissional);
+
+        conteudo+=`<strong>Total:</strong> ${lista.length}<br><br>`;
+
+        lista.forEach(a=>{
+            conteudo+=`
+                ${dataBR(a.data)} -
+                ${escapar(a.paciente)} -
+                ${escapar(a.profissional)} -
+                ${a.dias} dia(s)<br>
+            `;
+        });
+    }
+
+    ultimoRelatorio=conteudo;
+
+    abrirModal("Relatório",conteudo);
+}
+
+function imprimirUltimoRelatorio(){
+
+    if(!ultimoRelatorio){
+        alert("Gere o relatório primeiro.");
+        return;
+    }
+
+    imprimirConteudo(`
+        <h1>MENDES CLINIC</h1>
+        ${ultimoRelatorio}
+    `);
+}
+
+/* =====================================================
+   CONFIGURAÇÕES
+===================================================== */
+
+function salvarConfiguracoes(){
+
+    const config={
+        nome:document.getElementById("configNome").value,
+        descricao:document.getElementById("configDescricao").value,
+        telefone:document.getElementById("configTelefone").value,
+        email:document.getElementById("configEmail").value,
+        responsavel:document.getElementById("configResponsavel").value,
+        endereco:document.getElementById("configEndereco").value
+    };
+
+    localStorage.setItem(
+        "mendes_configuracoes",
+        JSON.stringify(config)
+    );
+
+    alert("Configurações salvas!");
+}
+
+function carregarConfiguracoes(){
+
+    const c=JSON.parse(
+        localStorage.getItem("mendes_configuracoes")
+    );
+
+    if(!c) return;
+
+    document.getElementById("configNome").value=c.nome||"MENDES CLINIC";
+    document.getElementById("configDescricao").value=c.descricao||"Sistemas de Gestão Hospitalar";
+    document.getElementById("configTelefone").value=c.telefone||"";
+    document.getElementById("configEmail").value=c.email||"";
+    document.getElementById("configResponsavel").value=c.responsavel||"";
+    document.getElementById("configEndereco").value=c.endereco||"";
+}
+
+/* PROFISSIONAIS */
+
+function adicionarProfissional(){
+
+    const nome=document.getElementById("novoProfissionalNome").value.trim();
+
+    if(!nome){
+        alert("Informe o nome do profissional.");
+        return;
+    }
+
+    profissionais.push({
+        nome,
+        crm:document.getElementById("novoProfissionalCRM").value.trim(),
+        especialidade:document.getElementById("novoProfissionalEspecialidade").value.trim()
+    });
+
+    document.getElementById("novoProfissionalNome").value="";
+    document.getElementById("novoProfissionalCRM").value="";
+    document.getElementById("novoProfissionalEspecialidade").value="";
+
+    salvarDados();
+    atualizarSistema();
+}
+
+function listarProfissionais(){
+
+    const tabela=document.getElementById("tabelaProfissionais");
+
+    tabela.innerHTML="";
+
+    profissionais.forEach((p,i)=>{
+
+        tabela.innerHTML+=`
+        <tr>
+            <td>${escapar(p.nome)}</td>
+            <td>${escapar(p.crm||"-")}</td>
+            <td>${escapar(p.especialidade||"-")}</td>
+            <td>
+
+                <button class="btn btn-light btn-icon"
+                        onclick="editarProfissional(${i})">
+                    <i class="fa-solid fa-pen"></i>
+                </button>
+
+                <button class="btn btn-danger btn-icon"
+                        onclick="excluirProfissional(${i})">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+
+            </td>
+        </tr>`;
+    });
+}
+
+function editarProfissional(i){
+
+    const p=profissionais[i];
+
+    const nome=prompt("Nome:",p.nome);
+    if(nome===null) return;
+
+    const crm=prompt("CRM / Registro:",p.crm||"");
+    if(crm===null) return;
+
+    const especialidade=prompt(
+        "Especialidade:",
+        p.especialidade||""
+    );
+
+    if(especialidade===null) return;
+
+    p.nome=nome;
+    p.crm=crm;
+    p.especialidade=especialidade;
+
+    salvarDados();
+    atualizarSistema();
+}
+
+function excluirProfissional(i){
+
+    if(!confirm("Excluir este profissional?")) return;
+
+    profissionais.splice(i,1);
+
+    salvarDados();
+    atualizarSistema();
+}
+
+/* TIPOS DE EXAMES */
+
+function adicionarTipoExame(){
+
+    const nome=document.getElementById("novoTipoExame").value.trim();
+
+    if(!nome) return;
+
+    tiposExames.push(nome);
+
+    document.getElementById("novoTipoExame").value="";
+
+    salvarDados();
+    atualizarSistema();
+}
+
+function listarTiposExames(){
+
+    const div=document.getElementById("listaTiposExames");
+
+    div.innerHTML="";
+
+    tiposExames.forEach((nome,i)=>{
+
+        div.innerHTML+=`
+            <span style="
+                display:inline-flex;
+                align-items:center;
+                gap:8px;
+                padding:8px 10px;
+                margin:4px;
+                background:#eee4f7;
+                border-radius:5px;
+            ">
+                ${escapar(nome)}
+
+                <button class="btn btn-danger btn-icon"
+                        onclick="excluirTipoExame(${i})">
+                    ×
+                </button>
+            </span>
+        `;
+    });
+}
+
+function excluirTipoExame(i){
+
+    if(!confirm("Excluir este tipo de exame?")) return;
+
+    tiposExames.splice(i,1);
+
+    salvarDados();
+    atualizarSistema();
+}
+
+/* SERVIÇOS */
+
+function adicionarServico(){
+
+    const nome=document.getElementById("novoServicoNome").value.trim();
+    const valor=Number(document.getElementById("novoServicoValor").value||0);
+
+    if(!nome){
+        alert("Informe o serviço.");
+        return;
+    }
+
+    servicos.push({nome,valor});
+
+    document.getElementById("novoServicoNome").value="";
+    document.getElementById("novoServicoValor").value="";
+
+    salvarDados();
+    atualizarSistema();
+}
+
+function listarServicos(){
+
+    const tabela=document.getElementById("tabelaServicos");
+
+    tabela.innerHTML="";
+
+    servicos.forEach((s,i)=>{
+
+        tabela.innerHTML+=`
+        <tr>
+            <td>${escapar(s.nome)}</td>
+            <td>${moeda(s.valor)}</td>
+            <td>
+
+                <button class="btn btn-light btn-icon"
+                        onclick="editarServico(${i})">
+                    <i class="fa-solid fa-pen"></i>
+                </button>
+
+                <button class="btn btn-danger btn-icon"
+                        onclick="excluirServico(${i})">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+
+            </td>
+        </tr>`;
+    });
+}
+
+function editarServico(i){
+
+    const nome=prompt("Serviço:",servicos[i].nome);
+
+    if(nome===null) return;
+
+    const valor=prompt("Valor:",servicos[i].valor);
+
+    if(valor===null) return;
+
+    servicos[i].nome=nome;
+    servicos[i].valor=Number(valor)||0;
+
+    salvarDados();
+    atualizarSistema();
+}
+
+function excluirServico(i){
+
+    if(!confirm("Excluir este serviço?")) return;
+
+    servicos.splice(i,1);
+
+    salvarDados();
+    atualizarSistema();
+}
+
+/* =====================================================
+   PESQUISA GERAL
+===================================================== */
+
+function pesquisarGeral(){
+
+    const valor=document.getElementById("pesquisaGeral").value.trim();
+
+    if(valor.length<2) return;
+
+    mostrarPagina("pacientes");
+
+    document.getElementById("pesquisaPaciente").value=valor;
+
+    listarPacientes();
+}
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+function classeStatus(status){
+
+    const s=(status||"").toLowerCase();
+
+    if(s==="em atendimento") return "atendimento";
+    if(s==="aguardar") return "aguardar";
+    if(s==="falta") return "falta";
+    if(s==="cancelado") return "cancelado";
+    if(s==="realizado") return "realizado";
+
+    return "confirmado";
+}
+
+function classeStatusExame(status){
+
+    if(status==="Realizado") return "realizado";
+    if(status==="Resultado disponível") return "resultado";
+    if(status==="Agendado") return "agendado";
+
+    return "solicitado";
+}
+
+/* =====================================================
+   MODAL
+===================================================== */
+
+function abrirModal(titulo,conteudo){
+
+    document.getElementById("modalTitulo").innerHTML=titulo;
+    document.getElementById("modalBody").innerHTML=conteudo;
+
+    document.getElementById("modal").classList.add("ativo");
+}
+
+function fecharModal(){
+    document.getElementById("modal").classList.remove("ativo");
+}
+
+document.getElementById("modal").addEventListener("click",function(event){
+
+    if(event.target===this){
+        fecharModal();
+    }
+});
+
+/* =====================================================
+   IMPRESSÃO
+===================================================== */
+
+function imprimirConteudo(html){
+
+    document.getElementById("areaImpressao").innerHTML=html;
+
+    setTimeout(()=>{
+        window.print();
+    },100);
+}
+
+/* =====================================================
+   LOCAL STORAGE
+===================================================== */
+
+function salvarDados(){
+
+    localStorage.setItem("mendes_pacientes",JSON.stringify(pacientes));
+    localStorage.setItem("mendes_agendamentos",JSON.stringify(agendamentos));
+    localStorage.setItem("mendes_prontuarios",JSON.stringify(prontuarios));
+    localStorage.setItem("mendes_prescricoes",JSON.stringify(prescricoes));
+    localStorage.setItem("mendes_exames",JSON.stringify(exames));
+    localStorage.setItem("mendes_faturamentos",JSON.stringify(faturamentos));
+    localStorage.setItem("mendes_atestados",JSON.stringify(atestados));
+    localStorage.setItem("mendes_profissionais",JSON.stringify(profissionais));
+    localStorage.setItem("mendes_tipos_exames",JSON.stringify(tiposExames));
+    localStorage.setItem("mendes_servicos",JSON.stringify(servicos));
+}
+
+/* =====================================================
+   CONTADORES
+===================================================== */
+
+function atualizarContadores(){
+
+    document.getElementById("totalPacientes").innerText=
+        pacientes.length.toLocaleString("pt-BR");
+
+    document.getElementById("totalConsultasHoje").innerText=
+        agendamentos.filter(a=>
+            dataISO(a.data)===hojeISO() &&
+            a.situacao!=="Cancelado"
+        ).length;
+
+    document.getElementById("totalEmAtendimento").innerText=
+        agendamentos.filter(a=>a.situacao==="Em atendimento").length;
+
+    document.getElementById("totalFaltas").innerText=
+        agendamentos.filter(a=>a.situacao==="Falta").length;
+}
+
+/* =====================================================
+   DATA / RELÓGIO
+===================================================== */
+
+function atualizarRelogio(){
+
+    const agora=new Date();
+
+    document.getElementById("relogio").innerText=
+        agora.toLocaleTimeString(
+            "pt-BR",
+            {
+                hour:"2-digit",
+                minute:"2-digit"
+            }
+        );
+
+    document.getElementById("dataAtual").innerText=
+        agora.toLocaleDateString("pt-BR");
+}
+
+setInterval(atualizarRelogio,1000);
+
+/* =====================================================
+   ATUALIZAR SISTEMA
+===================================================== */
+
+function atualizarSistema(){
+
+    preencherSelectPacientes();
+    preencherSelectProfissionais();
+    preencherTiposExame();
+    preencherServicos();
+
+    listarPacientes();
+    listarAgendamentos();
+    listarCancelamentos();
+    atualizarAgendaDashboard();
+    listarAtendimentos();
+    listarProntuarios();
+    listarPrescricoes();
+    listarExames();
+    listarFaturamento();
+    listarAtestados();
+    listarProfissionais();
+    listarTiposExames();
+    listarServicos();
+
+    atualizarRelatorios();
+    atualizarContadores();
+    montarCalendario();
+}
+
+/* =====================================================
+   INICIALIZAÇÃO
+===================================================== */
+
+carregarConfiguracoes();
+
+document.getElementById("dataAgendamento").value=hojeISO();
+document.getElementById("dataProntuario").value=hojeISO();
+document.getElementById("dataExame").value=hojeISO();
+document.getElementById("dataPagamento").value=hojeISO();
+document.getElementById("dataAtestado").value=hojeISO();
+document.getElementById("inicioAfastamento").value=hojeISO();
+
+atualizarRelogio();
+atualizarSistema();
+
+adicionarMedicamento();
+calcularFimAtestado();
+
+</script>
+
+</body>
+</html>
